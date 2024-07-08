@@ -1,6 +1,38 @@
-spring:
-  application:
-    name: aVocado
-
 server:
   port: 80
+  servlet:
+    encoding:
+      charset: utf-8
+
+# IntelliJ 환경변수 이용하여 사용
+# Release 시 AWS RDS MySQL driver, dialect 로 전환
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.h2.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 30000
+      pool-name: HikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        open-in-view: false
+        default_batch_fetch_size: 100
+        show_sql: true
+        format_sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: info
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
