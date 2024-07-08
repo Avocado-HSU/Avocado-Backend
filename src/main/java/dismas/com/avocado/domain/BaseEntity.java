@@ -1,4 +1,4 @@
-package dismas.com.avocado.dto;
+package dismas.com.avocado.domain;
 
 
 import jakarta.persistence.Column;
