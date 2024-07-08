@@ -1,7 +1,8 @@
-package dismas.com.avocado.domain.word;
+package dismas.com.avocado.domain.attendance;
 
-
+import dismas.com.avocado.domain.BaseEntity;
 import dismas.com.avocado.domain.Member;
+import dismas.com.avocado.domain.word.Word;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,8 +12,8 @@ import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- * 사용자 단어 엔티티 정의
- * 단어에 대한 사용자 통계 및 기타 메타정보를 저장한다.
+ * 출석 엔티티 정의
+ * 사용자 출석 관련 데이터를 저장, 관리한다.
  *
  * @version 1.0
  * @since 2024-07-08
@@ -23,16 +24,14 @@ import lombok.extern.jackson.Jacksonized;
 @SuperBuilder
 @Jacksonized
 @Getter
-public class MemberWord {
+public class Attendance extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_word_id")
+    @Column(name = "attendance_id")
     private Long id;
 
-    private Integer searchCount;    // 사용자 검색 횟수
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "word_id")
-    private Word word;
+    @JoinColumn(name = "date_id")
+    private Date date;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")

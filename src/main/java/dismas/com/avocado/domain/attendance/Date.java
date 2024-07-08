@@ -1,7 +1,5 @@
-package dismas.com.avocado.domain.word;
+package dismas.com.avocado.domain.attendance;
 
-
-import dismas.com.avocado.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,8 +8,11 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
+import java.time.LocalDate;
+
 /**
- * 단어 엔티티 정의
+ * 일정 엔티티 정의
+ * 일정에 대한 내용을 저장, 관리한다.
  *
  * @version 1.0
  * @since 2024-07-08
@@ -22,17 +23,18 @@ import lombok.extern.jackson.Jacksonized;
 @SuperBuilder
 @Jacksonized
 @Getter
-public class Word extends BaseEntity {
-
+public class Date {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "word_id")
+    @Column(name = "date_id")
     private Long id;
 
-    private Long searchCount;   // 인기 검색어
+    private LocalDate date;
 
-    private String english;
-    private String korean;
-    private String etymology;   // 어원 해석
-    private String audioUrl;
+    // 특정 휴일 및 이벤트 일정 설정
+    private String eventName;
+    private String eventDescription;
+
+    // 제공할 포인트
+    private String providePoint;
 }
