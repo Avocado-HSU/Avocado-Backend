@@ -1,7 +1,6 @@
-package dismas.com.avocado.domain.word;
+package dismas.com.avocado.domain.character;
 
 
-import dismas.com.avocado.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,7 +10,8 @@ import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- * 단어 엔티티 정의
+ * 캐릭터 디테일 엔티티 정의
+ * 각 레벨 별 캐릭터 디테일 정리
  *
  * @version 1.0
  * @since 2024-07-08
@@ -22,20 +22,18 @@ import lombok.extern.jackson.Jacksonized;
 @SuperBuilder
 @Jacksonized
 @Getter
-public class Word extends BaseEntity {
+public class CharacterDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "word_id")
+    @Column(name = "character_detail_id")
     private Long id;
 
-    private Long searchCount;   // 인기 검색어
+    private Long level;
 
-    private String english;
-    private String korean;
-    private String etymology;   // 어원 해석
+    private String prefix;
+    private String description;
 
     private String imageUrl;
-    private String audioUrl;
 
 }

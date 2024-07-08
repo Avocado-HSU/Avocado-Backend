@@ -1,7 +1,6 @@
 package dismas.com.avocado.domain.word;
 
 
-import dismas.com.avocado.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,10 +10,11 @@ import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- * 단어 엔티티 정의
+ * 추천 단어
+ * 관리자가 설정한 추천 단어를 관리하는 테이블입니다.
  *
  * @version 1.0
- * @since 2024-07-08
+ * @since 2024-07-09
  */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -22,20 +22,15 @@ import lombok.extern.jackson.Jacksonized;
 @SuperBuilder
 @Jacksonized
 @Getter
-public class Word extends BaseEntity {
+public class RecommendWord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "word_id")
+    @Column(name = "recommend_word_id")
     private Long id;
 
-    private Long searchCount;   // 인기 검색어
-
-    private String english;
-    private String korean;
-    private String etymology;   // 어원 해석
-
-    private String imageUrl;
-    private String audioUrl;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "word_id")
+    private Word word;
 
 }

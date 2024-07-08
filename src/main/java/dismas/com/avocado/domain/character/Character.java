@@ -1,7 +1,6 @@
-package dismas.com.avocado.domain.attendance;
+package dismas.com.avocado.domain.character;
 
 import dismas.com.avocado.domain.BaseEntity;
-import dismas.com.avocado.domain.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,9 +9,11 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
+
 /**
- * 출석 엔티티 정의
- * 사용자 출석 관련 데이터를 저장, 관리한다.
+ * 캐릭터 엔티티 정의
+ * 캐틱터의 공통 정보들을 저장한다.
+ * 각 레벨별 캐릭터의 특징은 1:N 관계로 CharacterDetail 에 저장한다
  *
  * @version 1.0
  * @since 2024-07-08
@@ -23,18 +24,16 @@ import lombok.extern.jackson.Jacksonized;
 @SuperBuilder
 @Jacksonized
 @Getter
-public class Attendance extends BaseEntity {
+public class Character extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "attendance_id")
+    @Column(name = "character_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "date_id")
-    private Date date;
+    private String name;
+    private Long price;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
+    @JoinColumn(name = "character_detail_id")
+    private CharacterDetail characterDetail;
 }

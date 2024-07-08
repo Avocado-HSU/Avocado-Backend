@@ -37,7 +37,6 @@ public class Member extends BaseEntity{
 
     /**
      * 사용자의 포인트를 증가시킵니다.
-     *
      * @param plusPoint 기존 포인트에서 증가시킬 포인트의 양
      */
 
@@ -47,7 +46,6 @@ public class Member extends BaseEntity{
 
     /**
      * 사용자의 포인트를 감소시킵니다.
-     *
      * @param minusPoint 기존 포인트에서 감소시킬 포인트의 양
      * // @throws PointOutOfBoundsException
      * //       if {@Code minusPoint} is greater than {@Code point}

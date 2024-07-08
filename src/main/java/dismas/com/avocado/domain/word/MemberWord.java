@@ -24,6 +24,7 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 @Getter
 public class MemberWord {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_word_id")
     private Long id;
@@ -37,4 +38,5 @@ public class MemberWord {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
 }
