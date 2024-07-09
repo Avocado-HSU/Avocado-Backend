@@ -3,10 +3,9 @@ server:
   servlet:
     encoding:
       charset: utf-8
-
+# IntelliJ 환경변수 이용하여 사용
+# Release 시 AWS RDS MySQL driver, dialect 로 전환
 spring:
-  application:
-    name: aVocado
   datasource:
     url: ${DB_URL}
     username: ${DB_USER}
