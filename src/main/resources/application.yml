@@ -3,7 +3,6 @@ server:
   servlet:
     encoding:
       charset: utf-8
-
 # IntelliJ 환경변수 이용하여 사용
 # Release 시 AWS RDS MySQL driver, dialect 로 전환
 spring:
@@ -31,6 +30,14 @@ spring:
         default_batch_fetch_size: 100
         show_sql: true
         format_sql: true
+
+  ai:
+    openai:
+      api-key: YOUR_API_KEY # aVocado API 키 필요
+      chat:
+        options:
+          model: gpt-3.5-turbo
+          temperature: 0.7
 
 logging:
   level:
