@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfig {
+
+    //Swagger 3.0
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
@@ -18,8 +20,8 @@ public class SwaggerConfig {
     private Info apiInfo() {
         return new Info()
                 .title("API Test") // API의 제목
-                .description("Let's practice Swagger UI") // API에 대한 설명
-                .version("2.0"); // API의 버전
+                .description("aVocado API") // API에 대한 설명
+                .version("3.0"); // API의 버전
     }
 }
 
