@@ -42,7 +42,8 @@ public class JWTFilter extends OncePerRequestFilter {
         if (authorization == null) {
 
             System.out.println("토큰이 비어있습니다.");
-            filterChain.doFilter(request, response);
+            //filterChain.doFilter(request, response);
+            response.sendRedirect("http://localhost:3000/");
 
             //조건이 해당되면 메소드 종료 (필수)
             return;

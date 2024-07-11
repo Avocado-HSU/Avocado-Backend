@@ -37,8 +37,9 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
+        //*주의* 되도록 setMaxAge랑 토큰의 수명주기가 같도록 해주어야합니다.
 
-        String token = jwtUtil.createJwt(username, role, 60*60*60L);
+        String token = jwtUtil.createJwt(username, role, 24*60*60L);
 
         response.addCookie(createCookie("Authorization", token));
         response.sendRedirect("http://localhost:3000/");
@@ -48,7 +49,9 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private Cookie createCookie(String key, String value) {
 
         Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(60*60*60);
+        //24시간
+        //*주의* jwtUtil.createJwt의 expiredMs와 같게 해주어야합니다.
+        cookie.setMaxAge(24*60*60);
         //cookie.setSecure(true);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
