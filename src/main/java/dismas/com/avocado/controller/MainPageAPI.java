@@ -19,7 +19,13 @@ public class MainPageAPI {
      */
     @GetMapping("api/main/{id}")
     public void getMainPage(@PathVariable("id") Member member){
+        // 캐릭터 서비스 호출 및 캐릭터 반환
 
+        // 출석 서비스 호출 및 출석 내역 반환 (DTO) - 몇월 몇주차? 월, 화, 수, 목, 금, 토, 일 (LocalDate, true/false)
+
+        // 인기 검색어
+
+        //
     }
 
 

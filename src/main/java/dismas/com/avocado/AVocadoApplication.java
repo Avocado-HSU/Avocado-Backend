@@ -2,10 +2,12 @@ package dismas.com.avocado;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@EnableJpaAuditing
 @SpringBootApplication
+@EnableJpaAuditing
+@EnableFeignClients
 public class AVocadoApplication {
 
     public static void main(String[] args) {
