@@ -1,4 +1,4 @@
-package dismas.com.avocado.config.openFeign;
+package dismas.com.avocado.config.openFeign.FreeDictionary;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

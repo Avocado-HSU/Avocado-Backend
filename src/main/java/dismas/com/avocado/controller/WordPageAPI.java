@@ -44,7 +44,7 @@ public class WordPageAPI {
      * @param word 사용자가 입력한 검색 값
      */
     @GetMapping("api/word/{id}/search/{word}")
-    public void searchWord(
+    public void wordSearch(
             @PathVariable("id") Member member,
             @PathVariable("word") String word){
 

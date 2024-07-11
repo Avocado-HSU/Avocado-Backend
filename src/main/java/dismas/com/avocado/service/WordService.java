@@ -8,10 +8,12 @@ import dismas.com.avocado.repository.word.MemberWordRepository;
 import dismas.com.avocado.repository.word.WordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * 단어 관련 서비스
@@ -35,15 +37,34 @@ public class WordService {
      * @param word 검색하고자 하는 word
      */
     public void searchWord(Member member, String word){
-        // 1. 단어 검증
-        // 2. 단어 API 호출 및 검증
-        // 3. GPT 모델 호출
-        // 4. 반환값 파싱
-        // 5. Word Service 호출
-        // a. 기존에 단어가 있는지 확인 -> 없을 경우 생성
-        // b. 해당 단어 기반으로 MemberWord 생성
 
-        // 6. Dto 구성 및 반환 (MemberWord ID 포함)
+        // 1. 단어 검증
+        if(validateWord(word)){
+            // 2. GPT 모델 호출
+            // 4. Word Service 호출
+                // createLibraryWord(Member member, String english, String etymology, String korean, String audioUrl);
+            // 6. Dto 구성 및 반환 (MemberWord ID 포함)
+                // a. 캐릭터 반환 (characterService 호출)
+                // b. 단어 반환
+                // c. 단어의 의미 (장문)
+                // d. 어원 분리 (상단 파싱)
+                // e. 예문 (예문과 뜻)
+                // f. 단어를 쉽게 외우는 팁
+                // g. 유사 단어 5개
+                // i. 같은 접두사를 가진 단어 5개
+        }else{
+            // false DTO 반환
+        }
+    }
+
+
+    /**
+     *
+     * @param member
+     */
+    public void popularWord(Member member){
+        // 페이징을 사용하여 인기있는 단어 5개 출력
+        // 스케줄링을 통해서 해결할 수 있지 않을까? -> 특정 시간에 인기있는 단어 검색
     }
 
     /**
@@ -53,12 +74,17 @@ public class WordService {
      * @param libraryWordId 라이브러리 단어 ID
      */
     public void deleteLibraryWord(Member member, Long libraryWordId){
-
+        try{
+            memberWordRepository.deleteById(libraryWordId);
+        }catch(EmptyResultDataAccessException e){
+            log.debug("존재하지 않는 라이브러리 단어를 삭제 시도하였습니다. id = {}", libraryWordId);
+            return;
+        }
     }
 
     /**
      * create Library Word Service (라이브러리 단어 추가 서비스)
-     * - 단어 테이블에 해당 단어가 없으면 추가
+     * - 단어 테이블에 해당 단어가 없으면 추가/
      * - 사용자와 단어간의 관계 구성 (MemberWord)
      *
      * @param member 사용자 ID
@@ -114,8 +140,34 @@ public class WordService {
      *
      * @param word 검증하고자 하는 단어
      */
-    public void validationWord(String word){
+    public boolean validateWord(String word){
 
+        if(word.contains(" ")){
+            log.debug("입력된 단어 {}에 공백이 있습니다", word);
+            return false;
+        }
+
+
+        if(isNotAlphabetical(word)){
+            log.debug("입력된 단어 {}는 알파벳으로 구성되지 않았습니다", word);
+            return false;
+        }
+
+
+        word = word.trim();
+        if(word.isEmpty()){
+            return false;
+        }
+
+        //openFeign(FreeDictionary을 이용하여 마지막 검증 수행
+            //404 에러 발생 시 예외 처리 수행
+            //505 에러 발생 시 예외 처리 수행
+
+        return true;
+    }
+
+    public boolean isNotAlphabetical(String word){
+        return !Pattern.matches("^[a-zA-Z]+$", word);
     }
 
 

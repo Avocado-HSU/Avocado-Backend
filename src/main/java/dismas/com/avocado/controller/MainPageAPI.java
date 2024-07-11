@@ -2,12 +2,17 @@ package dismas.com.avocado.controller;
 
 
 import dismas.com.avocado.domain.Member;
+import dismas.com.avocado.service.WordService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 public class MainPageAPI {
+
+    private final WordService wordService;
 
     /**
      * MainPage API
@@ -43,13 +48,8 @@ public class MainPageAPI {
     public void searchWord(
             @PathVariable("id") Member member,
             @PathVariable("word") String word){
-
-        // 검증 서비스 호출
-
-        // 검색 서비스 호출 -> Dto 생성
-            // Word 서비스 호출 (Member Word 생성)
-
-        // Dto 반환
+        //WordPageResponseDto 반환
+        //return wordService.searchWord(member, word);
     }
 
     /**
