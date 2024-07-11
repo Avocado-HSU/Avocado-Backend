@@ -2,10 +2,7 @@ package dismas.com.avocado.domain;
 
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
@@ -16,16 +13,24 @@ import lombok.extern.jackson.Jacksonized;
  * @since 2024-07-08
  */
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+//@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
 @Jacksonized
 @Getter
+@Setter
 public class Member extends BaseEntity{
-
+    //추후 중복되는 멤버변수는 제거 예정
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
+
+    private String username;
+
+    private String name;
+
+    private String role;
 
     private String OauthId;
 

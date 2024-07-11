@@ -1,4 +1,4 @@
-HELP.md
+# Ignore Gradle build files and directories
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
@@ -31,7 +31,10 @@ out/
 /nbbuild/
 /dist/
 /nbdist/
-/.nb-gradle/
+/nb-gradle/
 
 ### VS Code ###
 .vscode/
+
+# Ignore YAML files
+*.yml

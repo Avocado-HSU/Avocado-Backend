@@ -19,12 +19,15 @@ import lombok.extern.jackson.Jacksonized;
  * @since 2024-07-08
  */
 @Entity
+
+//@Table(name = "`character`") //MySQL 예약어 충돌 방지
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @SuperBuilder
 @Jacksonized
 @Getter
-public class Character extends BaseEntity {
+//원래 Character였으나 mysql에서 작업 시 충돌로 인하여 임시 변경
+public class CustomCharacter extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "character_id")
