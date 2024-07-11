@@ -18,6 +18,5 @@ public interface WordRepository extends JpaRepository<Word, Long> {
     @Query("select w.id from Word w where w.english = :word")
     Optional<Long> findIdByWord(@Param("word")String word);
 
-    Boolean existsByWord(@Param("word")String word);
 
 }
