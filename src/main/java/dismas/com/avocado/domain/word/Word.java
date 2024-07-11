@@ -17,7 +17,7 @@ import lombok.extern.jackson.Jacksonized;
  * @since 2024-07-08
  */
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
 @Jacksonized
@@ -38,4 +38,11 @@ public class Word extends BaseEntity {
     private String imageUrl;
     private String audioUrl;
 
+    /**
+     * 사용자가 검색한 횟수 증가
+     * 추후 인기 검색어에 사용
+     */
+    public void plusWordSearchCount(){
+        searchCount++;
+    }
 }

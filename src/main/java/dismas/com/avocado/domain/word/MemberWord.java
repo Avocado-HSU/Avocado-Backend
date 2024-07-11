@@ -29,7 +29,7 @@ public class MemberWord {
     @Column(name = "member_word_id")
     private Long id;
 
-    private Integer searchCount;    // 사용자 검색 횟수
+    private Long searchCount;    // 사용자 검색 횟수
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "word_id")
@@ -39,4 +39,9 @@ public class MemberWord {
     @JoinColumn(name = "member_id")
     private Member member;
 
+
+
+    public void plusMemberWordSearchCount(){
+        searchCount++;
+    }
 }
