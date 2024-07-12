@@ -11,7 +11,23 @@ const loginPageCheckEndPoind = () => {
   window.location.href = "http://localhost:80/health";
 }
 
-
+const getUserInfo = () => {
+  fetch("http://localhost:80/api/user/me", {
+    method: "GET",
+    credentials: 'include' // 쿠키를 요청에 포함시킵니다
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return res.json();
+    })
+    .then((data) => {
+      console.log(data); // 사용자 정보 처리
+      alert(JSON.stringify(data)); // 사용자 정보 확인
+    })
+    .catch((error) => alert(error));
+}
 
 // 데이터 가져오기 함수
 const getData = () => {
@@ -33,6 +49,7 @@ function Login(props) {
       <button onClick={onNaverLogin}>Naver Login</button>
       <button onClick={onKakaoLogin}>Kakao Login</button>
       <button onClick={loginPageCheckEndPoind}>health check</button>
+      <button onClick={getUserInfo}>나와라 유저정보</button>
 
       <button onClick={getData}>데이터 가져오기</button>
     </>
