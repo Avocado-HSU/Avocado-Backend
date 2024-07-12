@@ -88,7 +88,7 @@ public class SecurityConfig {
         //추후 엔드포인터별로 허용권한 변경해주어야함.
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**", "/health").permitAll()
                         .anyRequest().authenticated());
 
         //세션 설정 -> stateless 방식

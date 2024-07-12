@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -17,6 +19,7 @@ import java.io.IOException;
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
+    private final PathMatcher pathMatcher = new AntPathMatcher();
 
     public JWTFilter(JWTUtil jwtUtil) {
 
@@ -25,6 +28,11 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        if (isExcludedPath(request.getRequestURI())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         //쿠키들을 불러온 뒤 Authorization Key에 담긴 쿠키를 찾는다.
         String authorization = null;
@@ -81,4 +89,12 @@ public class JWTFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+    private boolean isExcludedPath(String requestURI) {
+        return pathMatcher.match("/", requestURI)
+                || pathMatcher.match("/swagger-ui/index.html", requestURI)
+                || pathMatcher.match("/swagger-ui/**", requestURI)
+                || pathMatcher.match("/v3/api-docs/**", requestURI)
+                || pathMatcher.match("/health", requestURI);
+    }
+
 }
