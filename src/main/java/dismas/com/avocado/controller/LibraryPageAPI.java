@@ -1,22 +1,40 @@
 package dismas.com.avocado.controller;
 
 import dismas.com.avocado.domain.Member;
+import dismas.com.avocado.dto.libraryPage.LibraryDto;
+import dismas.com.avocado.dto.libraryPage.LibraryPageDto;
+import dismas.com.avocado.mapper.LibraryMapper;
+import dismas.com.avocado.service.CharacterService;
+import dismas.com.avocado.service.LibraryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
+@RequiredArgsConstructor
 public class LibraryPageAPI {
+
+    private final LibraryMapper libraryMapper;
+
+    private final LibraryService libraryService;
+    private final CharacterService characterService;
 
     /**
      * Library Page API
-     * - 라이브러리로 지정한 값 중
-     * - 출석 관련 데이터 반환 (n월 m주차, 몇요일 출석)
-     * - 인기 검색어 (최대 5개 반환)
-     * - 추천 단어 반환
+     *  1. 캐릭터 이미지 반환
+     *  2. 라이브러리 단어 반환
      * @param member 사용자 id
      */
     @GetMapping("api/library/{id}")
-    public void getLibraryPage(@PathVariable("id") Member member){
+    public LibraryPageDto getLibraryPage(@PathVariable("id") Member member){
 
+        List<LibraryDto> libraryDtos = libraryService.getLibrary(member);
+
+        // 추후 캐릭터 이미지 가져오는 로직 추가
+        String dummyUrl = "dummy";
+
+        return libraryMapper.toLibraryPageDto(libraryDtos, dummyUrl);
     }
 
     /**
@@ -29,7 +47,8 @@ public class LibraryPageAPI {
     public void deleteLibraryWord(
             @PathVariable("id") Member member,
             @PathVariable("libraryId") Long libraryId){
-
+        // 빈 라이브러리 참조 시 예외처리 로직 추후 추가할 것
+        libraryService.deleteLibrary(libraryId);
     }
 
     /**

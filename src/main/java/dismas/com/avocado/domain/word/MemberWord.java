@@ -1,6 +1,7 @@
 package dismas.com.avocado.domain.word;
 
 
+import dismas.com.avocado.domain.BaseEntity;
 import dismas.com.avocado.domain.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -23,7 +24,7 @@ import lombok.extern.jackson.Jacksonized;
 @SuperBuilder
 @Jacksonized
 @Getter
-public class MemberWord {
+public class MemberWord extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_word_id")
@@ -39,7 +40,19 @@ public class MemberWord {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    private Boolean isLibraryWord;
 
+    public MemberWord() {
+
+    }
+
+    public void registerLibraryWord() {
+        isLibraryWord = true;
+    }
+
+    public void unregisterLibraryWord() {
+        isLibraryWord = false;
+    }
 
     public void plusMemberWordSearchCount(){
         searchCount++;

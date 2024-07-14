@@ -8,7 +8,6 @@ import dismas.com.avocado.repository.word.MemberWordRepository;
 import dismas.com.avocado.repository.word.WordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +30,7 @@ public class WordService {
     private final MemberWordRepository memberWordRepository;
 
     /**
-     * Word Search Service (단어 검색 서비스)
+     * Word Search Service with GPT (생성형 AI 단어 검색 서비스)
      *
      * @param member 사용자 ID
      * @param word 검색하고자 하는 word
@@ -57,44 +56,18 @@ public class WordService {
         }
     }
 
-
     /**
-     *
-     * @param member
-     */
-    public void popularWord(Member member){
-        // 페이징을 사용하여 인기있는 단어 5개 출력
-        // 스케줄링을 통해서 해결할 수 있지 않을까? -> 특정 시간에 인기있는 단어 검색
-    }
-
-    /**
-     * Delete Library Word Service (라이브러리 단어 삭제 서비스)
-     *
-     * @param member 사용자 ID
-     * @param libraryWordId 라이브러리 단어 ID
-     */
-    public void deleteLibraryWord(Member member, Long libraryWordId){
-        try{
-            memberWordRepository.deleteById(libraryWordId);
-        }catch(EmptyResultDataAccessException e){
-            log.debug("존재하지 않는 라이브러리 단어를 삭제 시도하였습니다. id = {}", libraryWordId);
-            return;
-        }
-    }
-
-    /**
-     * create Library Word Service (라이브러리 단어 추가 서비스)
-     * - 단어 테이블에 해당 단어가 없으면 추가/
+     * create Word Service (사용자 단어 엔티티 추가 서비스)
      * - 사용자와 단어간의 관계 구성 (MemberWord)
+     * - 라이브러리 단어는 별도 설정 필요
      *
      * @param member 사용자 ID
      * @param english 영어 단어
      * @param etymology 어원
      * @param korean 영어 단어 한글 해석
-     * @param audioUrl 영어 단어 음성 파일
      */
-    public Long createLibraryWord(
-            Member member, String english, String etymology, String korean, String audioUrl
+    public Long insertMemberWord(
+            Member member, String english, String etymology, String korean
     ) {
         Optional<Word> findWord = wordRepository.findWordByString(english);
         Word word;
@@ -105,7 +78,6 @@ public class WordService {
                             .english(english)
                             .etymology(etymology)
                             .korean(korean)
-                            .audioUrl(audioUrl)
                             .searchCount(1L)
                             .build()
             );
@@ -124,6 +96,7 @@ public class WordService {
                             .word(word)
                             .member(member)
                             .searchCount(1L)
+                            .isLibraryWord(false)
                             .build()
             );
         }else{

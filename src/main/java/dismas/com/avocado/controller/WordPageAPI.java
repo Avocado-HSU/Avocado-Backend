@@ -1,37 +1,23 @@
 package dismas.com.avocado.controller;
 
 import dismas.com.avocado.domain.Member;
+import dismas.com.avocado.domain.word.MemberWord;
+import dismas.com.avocado.service.WordService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class WordPageAPI {
+    private final WordService wordService;
+
+    public WordPageAPI(WordService wordService) {
+        this.wordService = wordService;
+    }
 
     // WordPage 는 각 페이지 Search API를 통해 넘어온다.
 
-    /**
-     * 라이브러리 등록 API
-     *
-     * - 기존에 라이브러리에 등록되어 있는지 확인
-     * - 등록 되어 있다면 -> setLibraryResponseDto : true
-     * - 등록 되지 않았다면 -> setLibraryResponseDto : false
-     *
-     * @param member 사용자 Entity
-     * @param word 사용자가 입력한 검색 값
-     */
-    @GetMapping("api/word/{id}/library/{word}")
-    public void getWordPage(
-            @PathVariable("id") Member member,
-            @PathVariable("word") String word){
 
-        // word 에 대한 검증 서비스 호출 (비즈니스)
-
-        // Library 서비스 호출 (등록 서비스)
-            // Library 서비스 저장이 20개가 넘었는지 검증 체크
-
-        // Dto 생성 및 반환
-    }
 
     /**
      * Search API

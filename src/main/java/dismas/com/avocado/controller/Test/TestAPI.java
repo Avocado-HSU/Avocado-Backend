@@ -1,4 +1,4 @@
-package dismas.com.avocado.controller;
+package dismas.com.avocado.controller.Test;
 
 import dismas.com.avocado.config.openFeign.FreeDictionary.FreeDictionaryApiClient;
 import lombok.RequiredArgsConstructor;
