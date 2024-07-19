@@ -1,10 +1,15 @@
 package dismas.com.avocado.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import dismas.com.avocado.domain.character.Character;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 사용자 엔티티 정의
@@ -37,8 +42,14 @@ public class Member extends BaseEntity{
     private String email;
 
     private String profileUrl;
-
+    
+    //해당 포인트는 유료 캐릭터 구매에 사용하는 포인트
     private Long point;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @JsonIgnore
+    private List<Character> customCharacters = new ArrayList<>();
 
     /**
      * 사용자의 포인트를 증가시킵니다.
@@ -56,12 +67,8 @@ public class Member extends BaseEntity{
      * //       if {@Code minusPoint} is greater than {@Code point}
      */
     public void minusMemberPoint(Long minusPoint){
-        if(point > minusPoint){
-            // 예외처리
-        }
-        else{
+
             point -= minusPoint;
-        }
     }
 
 }

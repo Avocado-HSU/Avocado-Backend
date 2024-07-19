@@ -3,7 +3,6 @@ package dismas.com.avocado.controller;
 import dismas.com.avocado.domain.Member;
 import dismas.com.avocado.dto.MemberDTO;
 import dismas.com.avocado.repository.MemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 public class UserController {
@@ -25,24 +23,22 @@ public class UserController {
     }
 
     @GetMapping("/user/me")
-    public ResponseEntity<MemberDTO> getCurrentUser(@AuthenticationPrincipal OAuth2User principal) {
-        // Extract username from OAuth2User
-        String username = principal.getName(); // This should now be the username
+    public ResponseEntity<Member> getCurrentUser(Authentication authentication,@AuthenticationPrincipal OAuth2User principal) {
+        String username = principal.getName();
+        System.out.println("뭘까요?: "+username);
         Member member = memberRepository.findByUsername(username);
 
         if (member == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
-        // Convert to DTO and return
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setId(member.getId());
         memberDTO.setUsername(member.getUsername());
         memberDTO.setName(member.getName());
         memberDTO.setEmail(member.getEmail());
         memberDTO.setRole(member.getRole());
-
-        return ResponseEntity.ok(memberDTO);
+        return ResponseEntity.ok(member);
     }
 
 }

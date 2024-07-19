@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CharacterDetailRepository extends JpaRepository<CharacterDetail, Long> {
-
+    CharacterDetail findByLevelAndName(Long level, String name);
+    CharacterDetail findFirstByNameOrderByLevelAsc(String name);
 }
