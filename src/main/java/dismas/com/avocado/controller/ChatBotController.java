@@ -1,6 +1,11 @@
 package dismas.com.avocado.controller;
 
-import org.springframework.ai.openai.OpenAiChatModel;
+import dismas.com.avocado.sevice.ChatBotService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,85 +14,48 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/chat")
 public class ChatBotController {
-    private final OpenAiChatModel chatModel;
+    private final ChatBotService chatBotService;
 
     @Autowired
-    public ChatBotController(OpenAiChatModel chatModel) {
-        this.chatModel = chatModel;
+    public ChatBotController(ChatBotService chatBotService) {
+        this.chatBotService = chatBotService;
     }
 
-    // 초기 인사 메시지 반환
-    @GetMapping("/default")
-    public Map<String, String> getGreeting() {
-        String greeting = "안녕하세요! 저는 사용자님의 영어 공부 도우미, ‘아보카’라고 합니다. 무엇을 도와드릴까요?";
-        return Map.of("message", greeting);
-    }
+    @Operation(summary = "챗봇에 정보 요청",
+                description = "greeting -> 환영인사, options -> 옵션 보기, 기타 요청은 아래에 있습니다."
+            , tags = { "ChatBot Controller" })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
 
-    // 사용자가 선택할 수 있는 옵션 반환
-    @GetMapping("/options")
-    public Map<String, String> getOptions() {
-        String options = "뜻이 궁금한 단어가 있어!\n" +
-                "이 단어에 유사 단어가 있는지 궁금해!\n" +
-                "어원으로 단어를 분류해줘!\n" +
-                "접두사/접미사가 같은 단어를 알려줘!\n" +
-                "외우기 어려운 단어의 팁을 알려줘!";
-        return Map.of("options", options);
-    }
+    @PostMapping("/request")
+    public Map<String, String> handleRequest(
+            @Parameter(description = "요청 타입",required = true,examples = {
+                    @ExampleObject(name = "greeting", value = "greeting", description = "인사 요청"),
+                    @ExampleObject(name = "options", value = "options", description = "옵션 요청"),
+                    @ExampleObject(name = "define", value = "define", description = "단어의 정의 요청"),
+                    @ExampleObject(name = "similar-words", value = "similar-words", description = "유사어 요청"),
+                    @ExampleObject(name = "etymology", value = "etymology", description = "어원 요청"),
+                    @ExampleObject(name = "prefix-suffix", value = "prefix-suffix", description = "접두사,접미사 요청"),
+                    @ExampleObject(name = "memorization-tips", value = "memorization-tips", description = "기억 꿀팁 요청")
+            })
+            @RequestParam("requestType") String requestType,
+            @Parameter(description = "단어",required = false,example = "apple")
+            @RequestParam("content") String content) {
 
-    // 5가지 조건에 해당하지 않는 요청의 경우 처리
-    @PostMapping("/other-request")
-    public Map<String, String> getOtherResponse(@RequestBody Map<String, String> requestBody) {
-        String response = requestBody.get("otherRequest");
+        String response;
+
+        if ("greeting".equals(requestType)) {
+            response = chatBotService.getGreeting();
+        } else if ("options".equals(requestType)) {
+            response = chatBotService.getOptions();
+        } else {
+            response = chatBotService.handleRequest(requestType, content);
+        }
+
         return Map.of("response", response);
     }
-
-    // 해당 단어의 뜻을 묻는 요청 처리 -> 뜻이 궁금한 단어가 있어!
-    @PostMapping("/define")
-    public Map<String, String> defineWord(@RequestBody Map<String, String> requestBody) {
-        String word = requestBody.get("word");
-        String prompt = "단어 '" + word + "'의 뜻을 알려주세요.";
-        String definition = chatModel.call(prompt);
-        String response = definition + " 더 필요한 도움이 있을까요?";
-        return Map.of("response", response);
-    }
-
-    // 해당 단어와 유사한 단어를 찾는 요청 처리 -> 이 단어에 유사한 단어가 있는지 궁금해!
-    @PostMapping("/similar-words")
-    public Map<String, String> getSimilarWords(@RequestBody Map<String, String> requestBody) {
-        String word = requestBody.get("word");
-        String prompt = "단어 '" + word + "'과 유사한 단어를 알려주세요.";
-        return Map.of("response", chatModel.call(prompt));
-    }
-
-    // 어원으로 단어를 분류해달라는 요청 처리 -> 어원으로 단어를 분류해줘!
-    @PostMapping("/etymology")
-    public Map<String, String> getEtymology(@RequestBody Map<String, String> requestBody) {
-        String word = requestBody.get("word");
-        String prompt = "단어 '" + word + "'의 어원을 알려주세요.";
-        return Map.of("response", chatModel.call(prompt));
-    }
-
-    // 접두사/접미사가 같은 단어 요청 처리 -> 접두사/접미사가 같은 단어를 알려줘!
-    @PostMapping("/prefix-suffix")
-    public Map<String, String> getPrefixSuffix(@RequestBody Map<String, String> requestBody) {
-        String prefixSuffix = requestBody.get("prefixSuffix");
-        String prompt = "접두사/접미사 '" + prefixSuffix + "'가 같은 단어를 알려주세요.";
-        return Map.of("response", chatModel.call(prompt));
-    }
-
-    // 외우기 어려운 단어에 대한 팁 요청 처리 -> 외우기 어려운 단어의 팁을 알려줘!
-    @PostMapping("/memorization-tips")
-    public Map<String, String> getMemorizationTips(@RequestBody Map<String, String> requestBody) {
-        String word = requestBody.get("word");
-        String prompt = "단어 '" + word + "'을 외우기 위한 팁을 알려주세요.";
-        return Map.of("response", chatModel.call(prompt));
-    }
-
-    /*
-    @GetMapping("/generateStream")
-    public Flux<ChatResponse> generateStream(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
-        Prompt prompt = new Prompt(new UserMessage(message));
-        return chatModel.stream(prompt);
-    }
-    */
 }

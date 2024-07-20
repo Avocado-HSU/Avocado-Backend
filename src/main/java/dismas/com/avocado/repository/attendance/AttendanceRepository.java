@@ -9,8 +9,10 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
-public interface AttendanceRepository extends JpaRepository<Attendance, Long>{
+@Repository
+public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     @Query("select a from Attendance a  where a.member = :member and a.day.date =:date" )
     Optional<Attendance> findAttendanceByDate(@Param("member")Member member, @Param("date")LocalDate date);

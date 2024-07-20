@@ -2,10 +2,7 @@ package dismas.com.avocado.domain.character;
 
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
@@ -22,6 +19,7 @@ import lombok.extern.jackson.Jacksonized;
 @SuperBuilder
 @Jacksonized
 @Getter
+@Setter
 public class CharacterDetail {
 
     @Id
@@ -32,7 +30,17 @@ public class CharacterDetail {
     private Long level;
 
     private String prefix;
+
+    // 캐릭터 이름 필드(어른 아보카도건 애기 아보카도건 아보카도가 이름이므로)
+    private String name;
+
     private String description;
+
+    //성장에 필요한 포인트 필드
+    private Long requiredPoint;
+
+    //해당 캐릭터의 요금
+    private Long price;
 
     private String imageUrl;
 
