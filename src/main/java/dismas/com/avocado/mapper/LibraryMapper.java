@@ -1,7 +1,7 @@
 package dismas.com.avocado.mapper;
 
 import dismas.com.avocado.domain.word.MemberWord;
-import dismas.com.avocado.dto.libraryPage.LibraryDeleteResponseDTO;
+import dismas.com.avocado.dto.libraryPage.LibraryDeleteResponseDto;
 import dismas.com.avocado.dto.libraryPage.LibraryResponseDto;
 import dismas.com.avocado.dto.libraryPage.LibraryPageResponseDto;
 import org.springframework.stereotype.Component;
@@ -45,7 +45,7 @@ public class LibraryMapper {
      * LibraryDeleteResponseDto convert Mapper
      * 라이브러리 삭제 여부 전송 DTO 구성
      */
-    public LibraryDeleteResponseDTO toLibraryDeleteResponseDto(boolean isDeleted) {
-        return LibraryDeleteResponseDTO.builder().isDeleted(isDeleted).build();
+    public LibraryDeleteResponseDto toLibraryDeleteResponseDto(boolean isDeleted) {
+        return LibraryDeleteResponseDto.builder().isDeleted(isDeleted).build();
     }
 }

@@ -31,7 +31,7 @@ public class Attendance extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "date_id")
-    private Date date;
+    private Day day;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")

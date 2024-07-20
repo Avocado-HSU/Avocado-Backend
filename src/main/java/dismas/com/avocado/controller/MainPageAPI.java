@@ -2,20 +2,28 @@ package dismas.com.avocado.controller;
 
 
 import dismas.com.avocado.domain.Member;
+import dismas.com.avocado.dto.mainPage.*;
 import dismas.com.avocado.dto.searchPage.RecentSearchWordResponseDto;
+import dismas.com.avocado.mapper.MainPageMapper;
+import dismas.com.avocado.service.AttendanceService;
+import dismas.com.avocado.service.PopularWordService;
 import dismas.com.avocado.service.WordService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class MainPageAPI {
 
+    private final MainPageMapper mainPageMapper;
+
     private final WordService wordService;
+    private final AttendanceService attendanceService;
+    private final PopularWordService popularWordService;
 
     /**
      * MainPage API
@@ -23,17 +31,38 @@ public class MainPageAPI {
      * - 출석 관련 데이터 반환 (n월 m주차, 몇요일 출석)
      * - 인기 검색어 (최대 5개 반환)
      * - 추천 단어 반환
-     * @param member
+     * @param member 사용자
      */
     @GetMapping("api/main/{id}")
-    public void getMainPage(@PathVariable("id") Member member){
-        // 프로필 이름 반환
+    public ResponseEntity<MainPageResponseDto> getMainPage(
+            @PathVariable("id") Member member,
+            @RequestBody MainPageRequestDto requestDto
+    ) {
+        PopularWordDto popularWordDto;
+        WeeklyAttendanceDto weeklyAttendanceDto;
+        RecommendWordDto recommendWordDto;
+        try {
+            weeklyAttendanceDto = attendanceService.getWeeklyAttendance(member, requestDto.getDate());
+            popularWordDto = popularWordService.getPopularWord();
+            recommendWordDto = wordService.getRecommendWord();
 
-        // 캐릭터 서비스 호출 및 캐릭터 반환
+        } catch (Exception e) {
+            log.error("출석 체크 서비스 에러 발생");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(mainPageMapper.toMainPageResponseDto(
+                            new WeeklyAttendanceDto(),
+                            new PopularWordDto(),
+                            new RecommendWordDto()
+                    ));
+        }
 
-        // 출석 서비스 호출 및 출석 내역 반환 (DTO) - 몇월 몇주차? 월, 화, 수, 목, 금, 토, 일 (LocalDate, true/false)
-
-        // 인기 검색어 반환 : WordService
+        return ResponseEntity.ok(
+                mainPageMapper.toMainPageResponseDto(
+                        weeklyAttendanceDto,    // 주간 출석 체크
+                        popularWordDto,         // 인기 검색어
+                        recommendWordDto        // 추천 검색어
+                )
+        );
     }
 
 

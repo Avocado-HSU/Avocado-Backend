@@ -1,7 +1,7 @@
 package dismas.com.avocado.controller;
 
 import dismas.com.avocado.domain.Member;
-import dismas.com.avocado.dto.libraryPage.LibraryDeleteResponseDTO;
+import dismas.com.avocado.dto.libraryPage.LibraryDeleteResponseDto;
 import dismas.com.avocado.dto.libraryPage.LibraryResponseDto;
 import dismas.com.avocado.dto.libraryPage.LibraryPageResponseDto;
 import dismas.com.avocado.mapper.LibraryMapper;
@@ -51,12 +51,12 @@ public class LibraryPageAPI {
      *
      */
     @DeleteMapping("api/library/{id}/{libraryId}")
-    public ResponseEntity<LibraryDeleteResponseDTO> deleteLibraryWord(
+    public ResponseEntity<LibraryDeleteResponseDto> deleteLibraryWord(
             @PathVariable("id") Member member,
             @PathVariable("libraryId") Long libraryId){
 
         boolean isDeleted = libraryService.deleteLibrary(libraryId);
-        LibraryDeleteResponseDTO responseDto = libraryMapper.toLibraryDeleteResponseDto(isDeleted);
+        LibraryDeleteResponseDto responseDto = libraryMapper.toLibraryDeleteResponseDto(isDeleted);
 
         if (isDeleted) {
             return ResponseEntity.ok(responseDto);

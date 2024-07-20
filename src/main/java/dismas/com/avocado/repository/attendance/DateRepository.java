@@ -1,12 +1,11 @@
 package dismas.com.avocado.repository.attendance;
 
-import dismas.com.avocado.domain.attendance.Date;
+import dismas.com.avocado.domain.attendance.Day;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Optional;
 
-public interface DateRepository extends JpaRepository<Date, Long> {
-    Date findByDate(LocalDate date);
+public interface DateRepository extends JpaRepository<Day, Long> {
+    Optional<Day> findByDate(LocalDate date);
 }

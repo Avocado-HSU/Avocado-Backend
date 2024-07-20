@@ -3,7 +3,10 @@ package dismas.com.avocado.service;
 import dismas.com.avocado.domain.Member;
 import dismas.com.avocado.domain.word.MemberWord;
 import dismas.com.avocado.domain.word.Word;
+import dismas.com.avocado.dto.WordDto;
+import dismas.com.avocado.dto.mainPage.RecommendWordDto;
 import dismas.com.avocado.dto.searchPage.RecentSearchWordResponseDto;
+import dismas.com.avocado.mapper.MainPageMapper;
 import dismas.com.avocado.mapper.SearchMapper;
 import dismas.com.avocado.repository.MemberRepository;
 import dismas.com.avocado.repository.word.MemberWordRepository;
@@ -14,8 +17,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * 단어 관련 서비스
@@ -24,7 +30,7 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class WordService {
 
@@ -33,6 +39,7 @@ public class WordService {
     private final MemberWordRepository memberWordRepository;
 
     private final SearchMapper searchMapper;
+    private final MainPageMapper mainPageMapper;
 
     /**
      * Word Search Service with GPT (생성형 AI 단어 검색 서비스)
@@ -71,6 +78,7 @@ public class WordService {
      * @param etymology 어원
      * @param korean 영어 단어 한글 해석
      */
+    @Transactional
     public Long insertMemberWord(
             Member member, String english, String etymology, String korean
     ) {
@@ -156,6 +164,24 @@ public class WordService {
      */
     public RecentSearchWordResponseDto getRecentSearchWord(Member member){
         return searchMapper.toRecentSearchWordResponseDto(memberWordRepository.findByMember(member, PageRequest.of(0, 10)).getContent());
+    }
+
+    /**
+     * Get Recommend Word Service (추천 단어 조회 서비스)
+     *
+     * 가장 조회가 많이 된 상위 30개 단어 중 랜덤으로 5개 단어를 선별해서 반환한다.
+     *
+     */
+    public RecommendWordDto getRecommendWord(){
+        List<Word> top30Word = wordRepository.findPopularWord(PageRequest.of(0, 30));
+
+        Collections.shuffle(top30Word);
+
+        List<Word> random5Words = top30Word.stream()
+                .limit(5)
+                .toList();
+
+        return mainPageMapper.toRecommendWordDto(random5Words);
     }
 
 

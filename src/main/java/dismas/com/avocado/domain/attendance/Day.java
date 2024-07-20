@@ -23,7 +23,7 @@ import java.time.LocalDate;
 @SuperBuilder
 @Jacksonized
 @Getter
-public class Date {
+public class Day {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "date_id")
@@ -36,5 +36,5 @@ public class Date {
     private String eventDescription;
 
     // 제공할 포인트
-    private String providePoint;
+    private Long providePoint;
 }

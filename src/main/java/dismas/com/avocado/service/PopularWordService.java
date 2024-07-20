@@ -2,7 +2,7 @@ package dismas.com.avocado.service;
 
 import dismas.com.avocado.domain.word.PopularWord;
 import dismas.com.avocado.domain.word.Word;
-import dismas.com.avocado.dto.mainPage.PopularWordResponseDto;
+import dismas.com.avocado.dto.mainPage.PopularWordDto;
 import dismas.com.avocado.mapper.MainPageMapper;
 import dismas.com.avocado.repository.word.PopularWordRepository;
 import dismas.com.avocado.repository.word.WordRepository;
@@ -64,7 +64,7 @@ public class PopularWordService {
      * Get Popular Word Service (인기 검색어 조회 서비스)
      * 메인 페이지에서 조회할 인기 검색어를 찾는다.
      */
-    public PopularWordResponseDto getPopularWord(){
+    public PopularWordDto getPopularWord(){
         return mainPageMapper.toPopularWordDto(popularWordRepository.findPopularWord(PageRequest.of(0, 5)));
     }
 
