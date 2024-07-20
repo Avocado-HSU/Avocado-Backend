@@ -1,6 +1,6 @@
 package dismas.com.avocado.oauth2;
 
-import dismas.com.avocado.dto.CustomOAuth2User;
+import dismas.com.avocado.dto.OAuthDto.CustomOAuth2User;
 import dismas.com.avocado.jwt.JWTUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

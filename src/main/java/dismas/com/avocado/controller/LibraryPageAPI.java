@@ -2,10 +2,9 @@ package dismas.com.avocado.controller;
 
 import dismas.com.avocado.domain.Member;
 import dismas.com.avocado.dto.libraryPage.LibraryDeleteResponseDto;
-import dismas.com.avocado.dto.libraryPage.LibraryResponseDto;
 import dismas.com.avocado.dto.libraryPage.LibraryPageResponseDto;
+import dismas.com.avocado.dto.libraryPage.LibraryResponseDto;
 import dismas.com.avocado.mapper.LibraryMapper;
-import dismas.com.avocado.service.CharacterService;
 import dismas.com.avocado.service.LibraryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +20,6 @@ public class LibraryPageAPI {
     private final LibraryMapper libraryMapper;
 
     private final LibraryService libraryService;
-    private final CharacterService characterService;
 
     /**
      * Library Page API

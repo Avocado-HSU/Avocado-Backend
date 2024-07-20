@@ -1,5 +1,6 @@
-package dismas.com.avocado.dto;
+package dismas.com.avocado.dto.OAuthDto;
 
+import dismas.com.avocado.dto.UserDTO;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 

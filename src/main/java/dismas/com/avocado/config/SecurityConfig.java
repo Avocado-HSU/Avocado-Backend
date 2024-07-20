@@ -3,7 +3,7 @@ package dismas.com.avocado.config;
 import dismas.com.avocado.jwt.JWTFilter;
 import dismas.com.avocado.jwt.JWTUtil;
 import dismas.com.avocado.oauth2.CustomSuccessHandler;
-import dismas.com.avocado.sevice.CustomOAuth2UserService;
+import dismas.com.avocado.service.CustomOAuth2UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

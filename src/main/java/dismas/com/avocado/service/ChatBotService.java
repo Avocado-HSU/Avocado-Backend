@@ -1,4 +1,4 @@
-package dismas.com.avocado.sevice;
+package dismas.com.avocado.service;
 
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.beans.factory.annotation.Autowired;

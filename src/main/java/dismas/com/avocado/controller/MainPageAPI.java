@@ -65,7 +65,6 @@ public class MainPageAPI {
         );
     }
 
-
     /**
      * MainPage Search API (검색 API)
      * - 입력값에 대한 기본적인 형식 검증

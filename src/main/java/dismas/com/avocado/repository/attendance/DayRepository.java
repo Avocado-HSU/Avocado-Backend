@@ -8,6 +8,6 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @Repository
-public interface DateRepository extends JpaRepository<Day, Long> {
+public interface DayRepository extends JpaRepository<Day, Long> {
     Optional<Day> findByDate(LocalDate date);
 }

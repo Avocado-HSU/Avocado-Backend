@@ -6,7 +6,7 @@ import dismas.com.avocado.domain.attendance.Day;
 import dismas.com.avocado.dto.mainPage.WeeklyAttendanceDto;
 import dismas.com.avocado.mapper.MainPageMapper;
 import dismas.com.avocado.repository.attendance.AttendanceRepository;
-import dismas.com.avocado.repository.attendance.DateRepository;
+import dismas.com.avocado.repository.attendance.DayRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ import java.util.Optional;
 public class AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
-    private final DateRepository dayRepository;
+    private final DayRepository dayRepository;
 
     private final MainPageMapper mainPageMapper;
 //

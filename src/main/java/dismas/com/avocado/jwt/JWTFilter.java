@@ -1,6 +1,6 @@
 package dismas.com.avocado.jwt;
 
-import dismas.com.avocado.dto.CustomOAuth2User;
+import dismas.com.avocado.dto.OAuthDto.CustomOAuth2User;
 import dismas.com.avocado.dto.UserDTO;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

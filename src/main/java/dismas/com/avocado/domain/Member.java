@@ -39,8 +39,6 @@ public class Member extends BaseEntity{
 
     private String OauthId;
 
-    private String name;
-
     private String nickName;
 
     private String email;

@@ -1,6 +1,6 @@
 package dismas.com.avocado.controller;
 
-import dismas.com.avocado.sevice.ChatBotService;
+import dismas.com.avocado.service.ChatBotService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
