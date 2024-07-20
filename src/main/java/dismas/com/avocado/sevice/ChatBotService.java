@@ -17,11 +17,11 @@ public class ChatBotService {
     }
 
     public String getOptions() {
-        return "뜻이 궁금한 단어가 있어!\n" +
-                "이 단어에 유사 단어가 있는지 궁금해!\n" +
-                "어원으로 단어를 분류해줘!\n" +
-                "접두사/접미사가 같은 단어를 알려줘!\n" +
-                "외우기 어려운 단어의 팁을 알려줘!";
+        return "define\n" +
+                "similar-words\n" +
+                "etymology\n" +
+                "prefix-suffix\n" +
+                "memorization-tips";
     }
 
     public String handleRequest(String requestType, String content) {

@@ -41,9 +41,6 @@ public class CharacterDetail {
 
     //해당 캐릭터의 요금
     private Long price;
-    // 유료 캐릭터 여부를 나타내는 필드
-    //price=0
-    private boolean isPremium;
 
     private String imageUrl;
 
