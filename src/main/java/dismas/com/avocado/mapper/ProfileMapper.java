@@ -1,4 +1,4 @@
-package dismas.com.avocado.mapper;
+/*package dismas.com.avocado.mapper;
 
 import dismas.com.avocado.domain.Member;
 import dismas.com.avocado.domain.character.Character;
@@ -44,3 +44,4 @@ public class ProfileMapper {
         );
     }
 }
+*/

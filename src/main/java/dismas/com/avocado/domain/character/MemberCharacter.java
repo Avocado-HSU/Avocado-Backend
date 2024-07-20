@@ -13,6 +13,7 @@ import lombok.extern.jackson.Jacksonized;
 @SuperBuilder
 @Jacksonized
 @Getter
+@Setter
 public class MemberCharacter extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +30,8 @@ public class MemberCharacter extends BaseEntity {
 
     private Long currentPoint;
     private String nickname;
-
+    //캐릭터 선택 여부
+    private Boolean isSelected;
     public void increaseCurrentPoint(Long plusPoint){
         currentPoint += plusPoint;
     }

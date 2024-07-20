@@ -1,6 +1,9 @@
 package dismas.com.avocado.service;
 
 import dismas.com.avocado.domain.Member;
+import dismas.com.avocado.domain.character.Character;
+import dismas.com.avocado.domain.character.CharacterDetail;
+import dismas.com.avocado.domain.character.MemberCharacter;
 import dismas.com.avocado.dto.OAuthDto.CustomOAuth2User;
 import dismas.com.avocado.dto.OAuthDto.KakaoResponse;
 import dismas.com.avocado.dto.OAuthDto.NaverResponse;
@@ -25,8 +28,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final MemberRepository memberRepository;
     private final CharacterDetailRepository characterDetailRepository;
-
-
+    private final CharacterRepository characterRepository;
+    private final CharacterService characterService;
 
     @Override
     @Transactional
@@ -65,18 +68,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             memberRepository.save(member);
             // 초기 회원가입 시에 기본 캐릭터를 배정받는다.
             // 새로운 회원에게 기본 캐릭터 할당
-            Optional<CharacterDetail> characterDetail = characterDetailRepository.findById(1L);
-            CharacterDetail defaultCharacterDetail=characterDetail.get();
-            Character customCharacter = Character.builder()
-                    .price(0L)
-                    .currentPoint(0L)
-                    .characterDetail(defaultCharacterDetail)
-                    .member(member)
-                    .build();
-
-            // 캐릭터 저장
-            customCharacterRepository.save(customCharacter);
-            member.getCustomCharacters().add(customCharacter);
+            characterService.setDefaultCharacter(member);
 
             UserDTO userDTO = new UserDTO();
             userDTO.setUsername(username);

@@ -26,7 +26,7 @@ public class CharacterController {
 
     private final CharacterService characterService;
     private final MemberRepository memberRepository;
-
+/*
     @Operation(summary = "캐릭터 구매", description = "특정 캐릭터를 캐릭터 이름으로 구매합니다." +
             "true는 구매 성공이며 false는 구매 실패(포인트 부족 혹은 존재하지 않는 캐릭터입니다.)"
             , tags = { "Chracter Controller" })
@@ -50,7 +50,7 @@ public class CharacterController {
         }
         return ResponseEntity.ok(characterService.purchaseCharacter(member,characterName));
     }
-
+*/
 
 
 
@@ -77,6 +77,8 @@ public class CharacterController {
 //        return ResponseEntity.ok("정상");
 //    }
 
+
+/*
     @Operation(summary = "유저가 보유중인 캐릭터 명단", description = "현재 유저가 보유 중인 캐릭터 명단을 보여줍니다."
             , tags = { "Chracter Controller" })
     @ApiResponses({
@@ -107,6 +109,10 @@ public class CharacterController {
         // 캐릭터 리스트 반환
         return ResponseEntity.ok(characters);
     }
+
+    */
+
+
     @Operation(summary = "유저가 보유중인 특정 캐릭터의 경험치 up", description = "보유중인 캐릭터의 경험치를 증가시켜줍니다."
             , tags = { "Chracter Controller" })
     @ApiResponses({
@@ -118,16 +124,12 @@ public class CharacterController {
     @PostMapping("/exp-up")
     public ResponseEntity<CharacterDto> expUpCharacter(
             @Parameter(description = "해당 유저의 캐릭터 id",required = true,example = "2")
-            @RequestParam Long id,
+            @RequestParam Long memberId,
             @Parameter(description = "증가 시켜줄 포인트 양",required = true,example = "500")
             @RequestParam Long increasePoint) {
-        Character customCharacter=characterService.expUpCharacter(id, increasePoint);
+        CharacterDto customCharacter=characterService.expUpCharacter(memberId, increasePoint);
 
-        return ResponseEntity.ok(new CharacterDto(
-                customCharacter.getId(),customCharacter.getCharacterDetail().getName(),customCharacter.getPrice(),
-                customCharacter.getCharacterDetail().getLevel(),customCharacter.getCharacterDetail().getPrefix(),
-                customCharacter.getCharacterDetail().getDescription(),customCharacter.getCharacterDetail().getImageUrl(),
-                customCharacter.getCurrentPoint(),customCharacter.getCharacterDetail().getRequiredPoint()
-        ));
+        return ResponseEntity.ok(customCharacter
+        );
     }
 }

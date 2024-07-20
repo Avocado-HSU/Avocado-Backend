@@ -47,12 +47,6 @@ public class Member extends BaseEntity{
     
     //해당 포인트는 유료 캐릭터 구매에 사용하는 포인트
     private Long point;
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    @JsonIgnore
-    private List<Character> customCharacters = new ArrayList<>();
-
     /**
      * 사용자의 포인트를 증가시킵니다.
      * @param plusPoint 기존 포인트에서 증가시킬 포인트의 양

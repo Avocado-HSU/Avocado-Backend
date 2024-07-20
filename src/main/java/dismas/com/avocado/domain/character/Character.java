@@ -35,4 +35,5 @@ public class Character extends BaseEntity {
 
     private Long price;
 
+
 }
