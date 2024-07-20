@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter @Setter
-public class LibraryDto {
+public class LibraryResponseDto {
 
     public String English;
     public String Korean;

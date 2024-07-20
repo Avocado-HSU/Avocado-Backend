@@ -16,11 +16,14 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class LibraryPageDto {
+public class LibraryPageResponseDto {
 
     // 캐릭터
     public String characterImgUrl;
     // 라이브러리 단어 리스트
-    public List<LibraryDto> libraryDtoList = new ArrayList<LibraryDto>();
+    public List<LibraryResponseDto> libraryResponseDtoList = new ArrayList<LibraryResponseDto>();
 
 }
+
+
+

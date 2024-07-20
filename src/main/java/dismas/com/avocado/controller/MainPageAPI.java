@@ -2,10 +2,13 @@ package dismas.com.avocado.controller;
 
 
 import dismas.com.avocado.domain.Member;
+import dismas.com.avocado.dto.searchPage.RecentSearchWordResponseDto;
 import dismas.com.avocado.service.WordService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -24,6 +27,8 @@ public class MainPageAPI {
      */
     @GetMapping("api/main/{id}")
     public void getMainPage(@PathVariable("id") Member member){
+        // 프로필 이름 반환
+
         // 캐릭터 서비스 호출 및 캐릭터 반환
 
         // 출석 서비스 호출 및 출석 내역 반환 (DTO) - 몇월 몇주차? 월, 화, 수, 목, 금, 토, 일 (LocalDate, true/false)
@@ -53,14 +58,15 @@ public class MainPageAPI {
     /**
      * MainPage Recent Search APi (검색 기록 API)
      * 가장 최근 검색한 내용 중 10개를 호출한다.
-     *
-     * @param member
+     * @param member 사용자 ID
+     * @return RecentSearchWordResponseDto 최근 검색 단어 반환
      */
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("api/main/{id}/search/recent")
-    public void getRecentSearch(
+    public RecentSearchWordResponseDto getRecentSearch(
             @PathVariable("id") Member member
     ){
-
+        return wordService.getRecentSearchWord(member);
     }
 
 }

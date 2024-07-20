@@ -2,10 +2,9 @@ package dismas.com.avocado.service;
 
 import dismas.com.avocado.domain.Member;
 import dismas.com.avocado.domain.word.MemberWord;
-import dismas.com.avocado.dto.libraryPage.LibraryDto;
+import dismas.com.avocado.dto.libraryPage.LibraryResponseDto;
 import dismas.com.avocado.mapper.LibraryMapper;
 import dismas.com.avocado.repository.word.MemberWordRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -45,20 +44,20 @@ public class LibraryService {
     /**
      * Delete Library Word Service (라이브러리 단어 삭제 서비스)
      *
-     * @param memberWord 삭제할 라이브러리 단어
+     * @param id 삭제할 라이브러리 단어
+     * @return 삭제 성공시 true, 그렇지 않으면 false
      */
     @Transactional
-    public void deleteLibrary(Long id){
-
-        Optional<MemberWord> optionalLibraryWord = memberWordRepository.findById(id);
-
-        if (optionalLibraryWord.isPresent()) {
-            MemberWord libraryWord = optionalLibraryWord.get();
-            libraryWord.unregisterLibraryWord();
-        } else {
-            // 예외처리 수행
-            log.error("빈 라이브러리 단어를 참고하였습니다. id = {}", id);
-        }
+    public boolean deleteLibrary(Long id){
+        return memberWordRepository.findById(id)
+                .map(libraryWord ->{
+                    libraryWord.unregisterLibraryWord();
+                    return true;
+                })
+                .orElseGet(()-> {
+                    log.error("라이브러리 단어를 찾을 수 없습니다. id = {}", id);
+                    return false;
+                });
     }
 
     /**
@@ -66,11 +65,10 @@ public class LibraryService {
      * 사용자의 라이브러리 단어를 조회 후 반환
      *
      * @param member 라이브러리 단어를 조회하기 위한 사용자 엔티티
+     * @return List<LibraryDto> LibraryPageDto를 구성하기 위한 Dto 반환
      */
-    public List<LibraryDto> getLibrary(Member member){
-        // Word를 Fetch 조회 후 Word에 담긴 뜻과 Library 내용을 같이 전달
-        List<MemberWord> memberWordList = memberWordRepository.findByMember(member, PageRequest.of(0, 20)).getContent();
-
+    public List<LibraryResponseDto> getLibrary(Member member){
+        List<MemberWord> memberWordList = memberWordRepository.findLibraryByMember(member, PageRequest.of(0, 20)).getContent();
         return libraryMapper.toLibraryDtos(memberWordList);
     }
 }

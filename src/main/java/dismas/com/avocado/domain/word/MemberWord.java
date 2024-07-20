@@ -42,9 +42,6 @@ public class MemberWord extends BaseEntity {
 
     private Boolean isLibraryWord;
 
-    public MemberWord() {
-
-    }
 
     public void registerLibraryWord() {
         isLibraryWord = true;

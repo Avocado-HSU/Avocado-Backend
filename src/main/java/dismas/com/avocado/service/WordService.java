@@ -3,11 +3,14 @@ package dismas.com.avocado.service;
 import dismas.com.avocado.domain.Member;
 import dismas.com.avocado.domain.word.MemberWord;
 import dismas.com.avocado.domain.word.Word;
+import dismas.com.avocado.dto.searchPage.RecentSearchWordResponseDto;
+import dismas.com.avocado.mapper.SearchMapper;
 import dismas.com.avocado.repository.MemberRepository;
 import dismas.com.avocado.repository.word.MemberWordRepository;
 import dismas.com.avocado.repository.word.WordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +31,8 @@ public class WordService {
     private final WordRepository wordRepository;
     private final MemberRepository memberRepository;
     private final MemberWordRepository memberWordRepository;
+
+    private final SearchMapper searchMapper;
 
     /**
      * Word Search Service with GPT (생성형 AI 단어 검색 서비스)
@@ -141,6 +146,16 @@ public class WordService {
 
     public boolean isNotAlphabetical(String word){
         return !Pattern.matches("^[a-zA-Z]+$", word);
+    }
+
+    /**
+     * Get Recent Search Word Service (최근 검색 단어 조회 서비스)
+     * 최근 검색된 단어를 조회하는 서비스
+     * @param member 사용자
+     * @return RecentSearchWordResponseDto 최근 검색 단어 반환 DTO
+     */
+    public RecentSearchWordResponseDto getRecentSearchWord(Member member){
+        return searchMapper.toRecentSearchWordResponseDto(memberWordRepository.findByMember(member, PageRequest.of(0, 10)).getContent());
     }
 
 

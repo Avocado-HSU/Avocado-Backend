@@ -1,7 +1,6 @@
 package dismas.com.avocado.controller;
 
 import dismas.com.avocado.domain.Member;
-import dismas.com.avocado.domain.word.MemberWord;
 import dismas.com.avocado.service.WordService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
