@@ -29,14 +29,22 @@ public class MemberCharacter extends BaseEntity {
     private Character character;
 
     private Long currentPoint;
+    private Long currentLevel;
+
     private String nickname;
+
     //캐릭터 선택 여부
     private Boolean isSelected;
+
     public void increaseCurrentPoint(Long plusPoint){
         currentPoint += plusPoint;
     }
 
     public void updateNickName(String newNickname){
         nickname = newNickname;
+    }
+
+    public Long levelUp(){
+        return ++currentLevel;
     }
 }

@@ -15,8 +15,8 @@ import lombok.extern.jackson.Jacksonized;
 @Setter
 public class WordDto {
 
-    private String english;
-    private String korean;
-    private String etymology;
+    public String english;
+    public String korean;
+    public String etymology;
 
 }

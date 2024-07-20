@@ -1,4 +1,4 @@
-package dismas.com.avocado.dto.mainPage;
+package dismas.com.avocado.dto.chatBotPage;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,14 +7,15 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
-import java.time.LocalDate;
-
 @SuperBuilder
 @Jacksonized
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class MainPageRequestDto {
-    public LocalDate date;
+public class ChatBotResponseDto {
+
+    public boolean isSuccess;
+
+    public String content;
 }

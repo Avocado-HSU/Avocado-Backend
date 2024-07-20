@@ -14,5 +14,5 @@ import lombok.extern.jackson.Jacksonized;
 @Getter
 @Setter
 public class LibraryDeleteResponseDto {
-    boolean isDeleted;
+    public boolean isDeleted;
 }

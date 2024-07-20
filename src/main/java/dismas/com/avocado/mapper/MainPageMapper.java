@@ -4,10 +4,7 @@ import dismas.com.avocado.domain.attendance.Attendance;
 import dismas.com.avocado.domain.word.PopularWord;
 import dismas.com.avocado.domain.word.Word;
 import dismas.com.avocado.dto.WordDto;
-import dismas.com.avocado.dto.mainPage.MainPageResponseDto;
-import dismas.com.avocado.dto.mainPage.RecommendWordDto;
-import dismas.com.avocado.dto.mainPage.WeeklyAttendanceDto;
-import dismas.com.avocado.dto.mainPage.PopularWordDto;
+import dismas.com.avocado.dto.mainPage.*;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -19,19 +16,20 @@ import java.util.stream.Collectors;
 public class MainPageMapper {
 
     public MainPageResponseDto toMainPageResponseDto(
+            MainPageCharacterDto mainPageCharacterDto,
             WeeklyAttendanceDto weeklyAttendanceDto,
             PopularWordDto popularWordDto,
             RecommendWordDto recommendWordDto
     ){
         // 프로필 및 캐릭터 이미지 추가 필요
         return MainPageResponseDto.builder()
+                .characterImageUrl(mainPageCharacterDto.getImgUrl())
+                .message(mainPageCharacterDto.getMessage())
                 .weeklyAttendanceDto(weeklyAttendanceDto)   // 주간 출석 체크
                 .popularWordDto(popularWordDto)             // 인기 검색어
                 .recommendWordDto(recommendWordDto)         // 추천 검색어
                 .build();
-
     }
-
 
     public PopularWordDto toPopularWordDto(List<PopularWord> words) {
         List<String> popularWords = words.stream()

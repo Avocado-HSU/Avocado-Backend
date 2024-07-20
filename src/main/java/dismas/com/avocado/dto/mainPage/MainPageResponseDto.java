@@ -19,15 +19,18 @@ public class MainPageResponseDto {
     // 상단 프로필
 
     // 캐릭터 이미지 및 텍스트
+    public String characterImageUrl;
+
+    public String message;
 
     // 주간 출석 내역
-    WeeklyAttendanceDto weeklyAttendanceDto;
+    public WeeklyAttendanceDto weeklyAttendanceDto;
 
     // 인기 검색어
-    PopularWordDto popularWordDto;
+    public PopularWordDto popularWordDto;
 
     // 추천 검색어
-    RecommendWordDto recommendWordDto;
+    public RecommendWordDto recommendWordDto;
 
 
 

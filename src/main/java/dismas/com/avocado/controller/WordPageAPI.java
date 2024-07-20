@@ -1,21 +1,26 @@
 package dismas.com.avocado.controller;
 
 import dismas.com.avocado.domain.Member;
+import dismas.com.avocado.dto.wordPage.SearchWordResponseDto;
+import dismas.com.avocado.mapper.WordPageMapper;
+import dismas.com.avocado.service.CharacterService;
+import dismas.com.avocado.service.OpenAiService;
 import dismas.com.avocado.service.WordService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
+@RequiredArgsConstructor
 public class WordPageAPI {
     private final WordService wordService;
-
-    public WordPageAPI(WordService wordService) {
-        this.wordService = wordService;
-    }
-
-    // WordPage 는 각 페이지 Search API를 통해 넘어온다.
-
+    private final CharacterService characterService;
+    private final OpenAiService openAiService;
+    private final WordPageMapper wordPageMapper;
 
 
     /**
@@ -29,16 +34,24 @@ public class WordPageAPI {
      * @param word 사용자가 입력한 검색 값
      */
     @GetMapping("api/word/{id}/search/{word}")
-    public void wordSearch(
+    private ResponseEntity<SearchWordResponseDto> wordSearch(
             @PathVariable("id") Member member,
-            @PathVariable("word") String word){
+            @PathVariable("word") String word
+    ) {
 
-        // 검증 서비스 호출
-
-        // 검색 서비스 호출 -> Dto 생성
-        // Word 서비스 호출 (Member Word 생성)
-
-        // Dto 반환
+        if(wordService.validateWord(word)){
+            try {
+                String characterImgUrl = characterService.getCharacterImage(member);
+                Map<SearchRequestType, String> contents = openAiService.handleSearchRequest(word);
+                return ResponseEntity.ok(wordPageMapper.toSearchWordResponseDto(true, characterImgUrl, contents));
+            }catch (RuntimeException e){
+                // OpenAI 에러
+                return ResponseEntity.internalServerError().body(wordPageMapper.toSearchWordResponseDto(false, null, null));
+            }
+        }else{
+            // 단어 검증 실패
+            return ResponseEntity.badRequest().body(wordPageMapper.toSearchWordResponseDto(false, null, null));
+        }
     }
 
 }

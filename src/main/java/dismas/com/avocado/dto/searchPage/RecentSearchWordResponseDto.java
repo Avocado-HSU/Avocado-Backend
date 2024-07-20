@@ -16,5 +16,5 @@ import java.util.List;
 @Getter
 @Setter
 public class RecentSearchWordResponseDto {
-    List<String> recentSearchWords;
+    public List<String> recentSearchWords;
 }

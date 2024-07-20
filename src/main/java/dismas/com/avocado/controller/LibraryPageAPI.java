@@ -4,22 +4,32 @@ import dismas.com.avocado.domain.Member;
 import dismas.com.avocado.dto.libraryPage.LibraryDeleteResponseDto;
 import dismas.com.avocado.dto.libraryPage.LibraryPageResponseDto;
 import dismas.com.avocado.dto.libraryPage.LibraryResponseDto;
+import dismas.com.avocado.dto.wordPage.SearchWordResponseDto;
 import dismas.com.avocado.mapper.LibraryMapper;
+import dismas.com.avocado.mapper.WordPageMapper;
+import dismas.com.avocado.service.CharacterService;
 import dismas.com.avocado.service.LibraryService;
+import dismas.com.avocado.service.OpenAiService;
+import dismas.com.avocado.service.WordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
 public class LibraryPageAPI {
 
     private final LibraryMapper libraryMapper;
+    private final WordPageMapper wordPageMapper;
 
+    private final CharacterService characterService;
     private final LibraryService libraryService;
+    private final WordService wordService;
+    private final OpenAiService openAiService;
 
     /**
      * Library Page API
@@ -36,9 +46,9 @@ public class LibraryPageAPI {
         List<LibraryResponseDto> libraryResponseDtos = libraryService.getLibrary(member);
 
         // 추후 캐릭터 이미지 가져오는 로직 추가
-        String dummyUrl = "dummy";
+        String imgUrl = characterService.getCharacterImage(member);
 
-        return libraryMapper.toLibraryPageDto(libraryResponseDtos, dummyUrl);
+        return libraryMapper.toLibraryPageDto(libraryResponseDtos, imgUrl);
     }
 
     /**
@@ -72,9 +82,23 @@ public class LibraryPageAPI {
      * @param word 라이브러리 단어 ID (서버에서 Library Page 요청 시 제공)
      */
     @GetMapping("api/library/{id}/search/{word}")
-    public void searchWord(
+    public ResponseEntity<SearchWordResponseDto> searchWord(
             @PathVariable("id") Member member,
             @PathVariable("word") String word){
+
+        if(wordService.validateWord(word)){
+            try {
+                String characterImgUrl = characterService.getCharacterImage(member);
+                Map<SearchRequestType, String> contents = openAiService.handleSearchRequest(word);
+                return ResponseEntity.ok(wordPageMapper.toSearchWordResponseDto(true, characterImgUrl, contents));
+            }catch (RuntimeException e){
+                // OpenAI 에러
+                return ResponseEntity.internalServerError().body(wordPageMapper.toSearchWordResponseDto(false, null, null));
+            }
+        }else{
+            // 단어 검증 실패
+            return ResponseEntity.badRequest().body(wordPageMapper.toSearchWordResponseDto(false, null, null));
+        }
 
     }
 

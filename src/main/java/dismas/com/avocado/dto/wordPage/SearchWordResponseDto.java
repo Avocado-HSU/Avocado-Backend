@@ -1,5 +1,6 @@
-package dismas.com.avocado.dto.mainPage;
+package dismas.com.avocado.dto.wordPage;
 
+import dismas.com.avocado.controller.SearchRequestType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
-import java.time.LocalDate;
+import java.util.Map;
 
 @SuperBuilder
 @Jacksonized
@@ -15,6 +16,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
-public class MainPageRequestDto {
-    public LocalDate date;
+public class SearchWordResponseDto {
+    Boolean isSuccess;
+    String characterImgUrl;
+    Map<SearchRequestType, String> contents;
 }

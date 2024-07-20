@@ -4,15 +4,17 @@ package dismas.com.avocado.controller;
 import dismas.com.avocado.domain.Member;
 import dismas.com.avocado.dto.mainPage.*;
 import dismas.com.avocado.dto.searchPage.RecentSearchWordResponseDto;
+import dismas.com.avocado.dto.wordPage.SearchWordResponseDto;
 import dismas.com.avocado.mapper.MainPageMapper;
-import dismas.com.avocado.service.AttendanceService;
-import dismas.com.avocado.service.PopularWordService;
-import dismas.com.avocado.service.WordService;
+import dismas.com.avocado.mapper.WordPageMapper;
+import dismas.com.avocado.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -20,10 +22,13 @@ import org.springframework.web.bind.annotation.*;
 public class MainPageAPI {
 
     private final MainPageMapper mainPageMapper;
+    private final WordPageMapper wordPageMapper;
 
     private final WordService wordService;
     private final AttendanceService attendanceService;
     private final PopularWordService popularWordService;
+    private final CharacterService characterService;
+    private final OpenAiService openAiService;
 
     /**
      * MainPage API
@@ -38,10 +43,12 @@ public class MainPageAPI {
             @PathVariable("id") Member member,
             @RequestBody MainPageRequestDto requestDto
     ) {
+        MainPageCharacterDto mainPageCharacterDto;
         PopularWordDto popularWordDto;
         WeeklyAttendanceDto weeklyAttendanceDto;
         RecommendWordDto recommendWordDto;
         try {
+            mainPageCharacterDto = new MainPageCharacterDto(characterService.getCharacterImage(member), "Hi" + member.getName());
             weeklyAttendanceDto = attendanceService.getWeeklyAttendance(member, requestDto.getDate());
             popularWordDto = popularWordService.getPopularWord();
             recommendWordDto = wordService.getRecommendWord();
@@ -50,6 +57,7 @@ public class MainPageAPI {
             log.error("출석 체크 서비스 에러 발생");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(mainPageMapper.toMainPageResponseDto(
+                            new MainPageCharacterDto(),
                             new WeeklyAttendanceDto(),
                             new PopularWordDto(),
                             new RecommendWordDto()
@@ -58,6 +66,7 @@ public class MainPageAPI {
 
         return ResponseEntity.ok(
                 mainPageMapper.toMainPageResponseDto(
+                        mainPageCharacterDto,
                         weeklyAttendanceDto,    // 주간 출석 체크
                         popularWordDto,         // 인기 검색어
                         recommendWordDto        // 추천 검색어
@@ -76,11 +85,23 @@ public class MainPageAPI {
      * @param word 사용자가 입력한 검색값
      */
     @GetMapping("api/main/{id}/search/{word}")
-    public void searchWord(
+    public ResponseEntity<SearchWordResponseDto> searchWord(
             @PathVariable("id") Member member,
             @PathVariable("word") String word){
-        //WordPageResponseDto 반환
-        //return wordService.searchWord(member, word);
+
+        if(wordService.validateWord(word)){
+            try {
+                String characterImgUrl = characterService.getCharacterImage(member);
+                Map<SearchRequestType, String> contents = openAiService.handleSearchRequest(word);
+                return ResponseEntity.ok(wordPageMapper.toSearchWordResponseDto(true, characterImgUrl, contents));
+            }catch (RuntimeException e){
+                // OpenAI 에러
+                return ResponseEntity.internalServerError().body(wordPageMapper.toSearchWordResponseDto(false, null, null));
+            }
+        }else{
+            // 단어 검증 실패
+            return ResponseEntity.badRequest().body(wordPageMapper.toSearchWordResponseDto(false, null, null));
+        }
     }
 
     /**

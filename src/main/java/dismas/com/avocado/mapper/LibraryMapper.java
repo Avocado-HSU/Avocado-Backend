@@ -15,7 +15,7 @@ public class LibraryMapper {
     /**
      * Library to LibraryDto convert Mapper
      * - 추후 etymologyList 파싱 나올 시 로직 추가할 것
-     * @param memberWords
+     * @param memberWords 사용자 입력
      * @return List<LibraryDto> LibraryPageDto 생성을 위함
      */
     public List<LibraryResponseDto> toLibraryDtos(List<MemberWord> memberWords) {

@@ -16,5 +16,5 @@ import java.util.List;
 @Getter
 @Setter
 public class PopularWordDto {
-    List<String> popularWords;
+    public List<String> popularWords;
 }

@@ -12,13 +12,4 @@ import lombok.extern.jackson.Jacksonized;
 @Setter
 public class CharacterDto {
 
-    private Long id;
-    private String name;
-    private Long price;
-    private Long level;
-    private String prefix;
-    private String description;
-    private String imageUrl;
-    private Long currentPoint;
-    private Long requiredPoint;
 }

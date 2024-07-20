@@ -16,5 +16,5 @@ import java.util.List;
 @Getter
 @Setter
 public class WeeklyAttendanceDto {
-    List<Boolean> attendances;
+    public List<Boolean> attendances;
 }

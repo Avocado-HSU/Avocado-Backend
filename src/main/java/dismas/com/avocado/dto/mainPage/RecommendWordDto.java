@@ -17,5 +17,5 @@ import java.util.List;
 @Getter
 @Setter
 public class RecommendWordDto {
-    List<WordDto> recommendWords;
+    public List<WordDto> recommendWords;
 }
