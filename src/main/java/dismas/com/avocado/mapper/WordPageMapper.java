@@ -10,12 +10,16 @@ import java.util.Map;
 public class WordPageMapper {
 
     public SearchWordResponseDto toSearchWordResponseDto(
-            Boolean isSuccess, String imgUrl, Map<SearchRequestType, String> contents){
+            Boolean isSuccess, Long libraryId, String imgUrl, Map<SearchRequestType, String> contents){
 
         return SearchWordResponseDto.builder()
                 .isSuccess(isSuccess)
+                .libraryId(libraryId)
                 .characterImgUrl(imgUrl)
                 .contents(contents)
                 .build();
     }
+
+
+
 }

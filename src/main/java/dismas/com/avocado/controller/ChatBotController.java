@@ -6,7 +6,6 @@ import dismas.com.avocado.service.OpenAiService;
 import dismas.com.avocado.service.WordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +19,10 @@ public class ChatBotController {
 
     private final OpenAiService openAiService;
     private final WordService wordService;
-
     private final ChatBotMapper chatBotMapper;
 
     @Operation(summary = "챗봇에 정보 요청",
-                description = "greeting -> 환영인사, options -> 옵션 보기, 기타 요청은 아래에 있습니다."
+                description = "챗봇에게 요청하고 응답받기"
             , tags = { "ChatBot Controller" })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -34,13 +32,6 @@ public class ChatBotController {
     })
     @PostMapping("api/request")
     public ResponseEntity<ChatBotResponseDto> handleRequest(
-            @Parameter(description = "요청 타입",required = true,examples = {
-                    @ExampleObject(name = "define", value = "define", description = "단어의 정의 요청"),
-                    @ExampleObject(name = "similar-words", value = "similar-words", description = "유사어 요청"),
-                    @ExampleObject(name = "etymology", value = "etymology", description = "어원 요청"),
-                    @ExampleObject(name = "prefix-suffix", value = "prefix-suffix", description = "접두사 요청"),
-                    @ExampleObject(name = "memorization-tips", value = "memorization-tips", description = "기억 꿀팁 요청")
-            })
             @RequestParam("requestType") ChatBotRequestType requestType,
             @Parameter(description = "단어", required = false, example = "apple")
             @RequestParam("word") String word) {
@@ -53,7 +44,7 @@ public class ChatBotController {
                 response = openAiService.handleChatBotRequest(requestType, word);
                 isSuccess = true;
             }catch (RuntimeException e){
-                response = "Open AI Connect Error";
+                response = String.valueOf(e);
                 return ResponseEntity.internalServerError().body(chatBotMapper.toChatBotResponseDto(isSuccess, response));
             }
         }else{

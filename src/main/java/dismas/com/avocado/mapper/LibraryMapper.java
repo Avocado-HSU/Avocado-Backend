@@ -1,9 +1,11 @@
 package dismas.com.avocado.mapper;
 
+
 import dismas.com.avocado.domain.word.MemberWord;
-import dismas.com.avocado.dto.libraryPage.LibraryDeleteResponseDto;
-import dismas.com.avocado.dto.libraryPage.LibraryResponseDto;
+import dismas.com.avocado.dto.libraryPage.UpdateLibraryResponseDto;
+import dismas.com.avocado.dto.libraryPage.LibraryWordDto;
 import dismas.com.avocado.dto.libraryPage.LibraryPageResponseDto;
+import dismas.com.avocado.dto.libraryPage.UpdateLibraryResponseType;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,9 +20,10 @@ public class LibraryMapper {
      * @param memberWords 사용자 입력
      * @return List<LibraryDto> LibraryPageDto 생성을 위함
      */
-    public List<LibraryResponseDto> toLibraryDtos(List<MemberWord> memberWords) {
+    public List<LibraryWordDto> toLibraryDtos(List<MemberWord> memberWords) {
         return memberWords.stream()
-                .map(memberWord -> LibraryResponseDto.builder()
+                .map(memberWord -> LibraryWordDto.builder()
+                        .LibraryId(memberWord.getId())
                         .English(memberWord.getWord().getEnglish())
                         .Korean(memberWord.getWord().getKorean())
                         .build())
@@ -30,22 +33,25 @@ public class LibraryMapper {
     /**
      * LibraryPageDto convert Mapper
      * - 캐릭터 이미지와 라이브러리 단어로 구성
-     * @param libraryResponseDtos 라이브러리 단어 리스트
+     * @param libraryWordDtos 라이브러리 단어 리스트
      * @param imgUrl 캐릭터 이미지
      * @return LibraryPageDto 라이브러리 페이지 데이터 전달
      */
-    public LibraryPageResponseDto toLibraryPageDto(List<LibraryResponseDto> libraryResponseDtos, String imgUrl){
+    public LibraryPageResponseDto toLibraryPageDto(List<LibraryWordDto> libraryWordDtos, String imgUrl){
         return LibraryPageResponseDto.builder()
-                .libraryResponseDtoList(libraryResponseDtos)
+                .libraryWordDtoList(libraryWordDtos)
                 .characterImgUrl(imgUrl)
                 .build();
     }
 
     /**
      * LibraryDeleteResponseDto convert Mapper
-     * 라이브러리 삭제 여부 전송 DTO 구성
+     * 라이브러리 등록/삭제 여부 전송 DTO 구성
      */
-    public LibraryDeleteResponseDto toLibraryDeleteResponseDto(boolean isDeleted) {
-        return LibraryDeleteResponseDto.builder().isDeleted(isDeleted).build();
+    public UpdateLibraryResponseDto toUpdateLibraryResponseDto(UpdateLibraryResponseType responseType, Long libraryId){
+        return UpdateLibraryResponseDto.builder()
+                .responseType(responseType)
+                .LibraryId(libraryId)
+                .build();
     }
 }

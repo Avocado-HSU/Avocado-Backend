@@ -16,5 +16,5 @@ public interface CharacterDetailRepository extends JpaRepository<CharacterDetail
     List<CharacterDetail> findByCharacterIdOrderByLevelAsc(Long characterId);
 
     @Query("select cd from CharacterDetail cd where cd.level = :level and cd.character = :character")
-    Optional<CharacterDetail> findByLevel(@Param("character") Character character, @Param("level") Long level);
+    Optional<CharacterDetail> findByLevel(@Param("level") Long level,@Param("character") Character character);
 }

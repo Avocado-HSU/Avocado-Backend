@@ -21,7 +21,6 @@ public class CharacterService {
 
     private final CharacterRepository characterRepository;
     private final CharacterDetailRepository characterDetailRepository;
-    private final MemberRepository memberRepository;
     private final MemberCharacterRepository memberCharacterRepository;
 
     @Transactional
@@ -39,6 +38,7 @@ public class CharacterService {
                     .currentPoint(0L)
                     .nickname("일단 내맘대로 닉네임")
                     .isSelected(true)
+                    .currentLevel(1L)
                     .build();
 
             // MemberCharacter 저장
@@ -71,7 +71,7 @@ public class CharacterService {
         Character character = memberCharacter.getCharacter();
 
 
-        Optional<CharacterDetail> characterDetail = characterDetailRepository.findByLevel(character, nextLevel);
+        Optional<CharacterDetail> characterDetail = characterDetailRepository.findByLevel(nextLevel, character);
 
         boolean isLevelUp = characterDetail
                 .map(detail -> currentPoint >= detail.getRequiredPoint())
@@ -97,8 +97,7 @@ public class CharacterService {
         Long currentLevel = memberCharacter.getCurrentLevel();
         Character character = memberCharacter.getCharacter();
 
-        return characterDetailRepository.findByLevel(character, currentLevel)
-                .orElseThrow(RuntimeException::new)
+        return characterDetailRepository.findByLevel(currentLevel,character).get()
                 .getImageUrl();
     }
 }

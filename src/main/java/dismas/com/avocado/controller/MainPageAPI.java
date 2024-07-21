@@ -2,12 +2,15 @@ package dismas.com.avocado.controller;
 
 
 import dismas.com.avocado.domain.Member;
+import dismas.com.avocado.domain.word.MemberWord;
 import dismas.com.avocado.dto.mainPage.*;
 import dismas.com.avocado.dto.searchPage.RecentSearchWordResponseDto;
 import dismas.com.avocado.dto.wordPage.SearchWordResponseDto;
 import dismas.com.avocado.mapper.MainPageMapper;
 import dismas.com.avocado.mapper.WordPageMapper;
 import dismas.com.avocado.service.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -38,8 +41,9 @@ public class MainPageAPI {
      * - 추천 단어 반환
      * @param member 사용자
      */
-    @GetMapping("api/main/{id}")
+    @PostMapping("api/main/{id}")
     public ResponseEntity<MainPageResponseDto> getMainPage(
+            @Parameter(description = "유저 id", required = true, example = "1")
             @PathVariable("id") Member member,
             @RequestBody MainPageRequestDto requestDto
     ) {
@@ -86,21 +90,24 @@ public class MainPageAPI {
      */
     @GetMapping("api/main/{id}/search/{word}")
     public ResponseEntity<SearchWordResponseDto> searchWord(
+            @Parameter(description = "유저 id", required = true, example = "1")
             @PathVariable("id") Member member,
+            @Parameter(description = "단어", required = true, example = "단어")
             @PathVariable("word") String word){
-
         if(wordService.validateWord(word)){
             try {
                 String characterImgUrl = characterService.getCharacterImage(member);
                 Map<SearchRequestType, String> contents = openAiService.handleSearchRequest(word);
-                return ResponseEntity.ok(wordPageMapper.toSearchWordResponseDto(true, characterImgUrl, contents));
+                // 파싱 진행
+                MemberWord memberWord = wordService.insertMemberWord(member, word, "", "");
+                return ResponseEntity.ok(wordPageMapper.toSearchWordResponseDto(true, memberWord.getId(), characterImgUrl, contents));
             }catch (RuntimeException e){
                 // OpenAI 에러
-                return ResponseEntity.internalServerError().body(wordPageMapper.toSearchWordResponseDto(false, null, null));
+                return ResponseEntity.internalServerError().body(wordPageMapper.toSearchWordResponseDto(false, null, null, null));
             }
         }else{
             // 단어 검증 실패
-            return ResponseEntity.badRequest().body(wordPageMapper.toSearchWordResponseDto(false, null, null));
+            return ResponseEntity.badRequest().body(wordPageMapper.toSearchWordResponseDto(false, null,null, null));
         }
     }
 
@@ -113,6 +120,7 @@ public class MainPageAPI {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("api/main/{id}/search/recent")
     public RecentSearchWordResponseDto getRecentSearch(
+            @Parameter(description = "유저 id", required = true, example = "1")
             @PathVariable("id") Member member
     ){
         return wordService.getRecentSearchWord(member);

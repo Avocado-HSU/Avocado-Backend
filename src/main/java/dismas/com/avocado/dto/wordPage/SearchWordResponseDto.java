@@ -18,6 +18,7 @@ import java.util.Map;
 @Setter
 public class SearchWordResponseDto {
     Boolean isSuccess;
+    Long libraryId;
     String characterImgUrl;
     Map<SearchRequestType, String> contents;
 }

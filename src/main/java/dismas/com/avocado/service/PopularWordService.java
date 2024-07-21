@@ -57,16 +57,22 @@ public class PopularWordService {
      */
     @Transactional
     public void deletePopularWord(){
-        wordRepository.deleteAll();
+        popularWordRepository.deleteAll();
     }
 
     /**
      * Get Popular Word Service (인기 검색어 조회 서비스)
      * 메인 페이지에서 조회할 인기 검색어를 찾는다.
      */
+    @Transactional
     public PopularWordDto getPopularWord(){
-        return mainPageMapper.toPopularWordDto(popularWordRepository.findPopularWord(PageRequest.of(0, 5)));
-    }
+        List<PopularWord> popularWords = popularWordRepository.findPopularWord(PageRequest.of(0, 5));
 
+        if(popularWords.isEmpty()){
+            updatePopularWord();
+        }
+
+        return mainPageMapper.toPopularWordDto(popularWords);
+    }
 
 }

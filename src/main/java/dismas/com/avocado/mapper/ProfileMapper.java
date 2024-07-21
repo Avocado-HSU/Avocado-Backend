@@ -1,11 +1,6 @@
 package dismas.com.avocado.mapper;
 
-import dismas.com.avocado.domain.Member;
-import dismas.com.avocado.domain.character.Character;
-import dismas.com.avocado.dto.CharacterDto;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class ProfileMapper {
 //    public void toCharacterDto(List<Character> characters){

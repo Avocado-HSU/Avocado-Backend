@@ -2,7 +2,9 @@ package dismas.com.avocado.service;
 
 import dismas.com.avocado.domain.Member;
 import dismas.com.avocado.domain.word.MemberWord;
-import dismas.com.avocado.dto.libraryPage.LibraryResponseDto;
+import dismas.com.avocado.dto.libraryPage.LibraryWordDto;
+import dismas.com.avocado.dto.libraryPage.UpdateLibraryResponseDto;
+import dismas.com.avocado.dto.libraryPage.UpdateLibraryResponseType;
 import dismas.com.avocado.mapper.LibraryMapper;
 import dismas.com.avocado.repository.word.MemberWordRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+
+import static dismas.com.avocado.dto.libraryPage.UpdateLibraryResponseType.*;
 
 /**
  * 라이브러리 서비스
@@ -31,34 +35,37 @@ public class LibraryService {
     private final LibraryMapper libraryMapper;
 
     /**
-     * Register Library Word Service (라이브러리 단어 등록 서비스)
+     * Register Library Word Service (라이브러리 단어 등록/삭제 서비스)
      *
-     * @param memberWord 사용자 단어 (단어와 사용자의 관계 테이블)
+     * @param libraryId 라이브러리 ID
      */
     @Transactional
-    public void updateLibrary(MemberWord memberWord){
+    public UpdateLibraryResponseDto updateLibrary(Long libraryId){
         // 라이브러리 단어의 최대 갯수 20개 - 20개 넘으면 추가 X, 클라이언트에 전달하는 로직 필요
-        memberWord.registerLibraryWord();
+        Optional<MemberWord> optionalMemberWord = memberWordRepository.findById(libraryId);
+
+        if (optionalMemberWord.isEmpty()) {
+            throw new RuntimeException("단어가 존재하지 않습니다.");
+        }
+
+        MemberWord memberWord = optionalMemberWord.get();
+        UpdateLibraryResponseType responseType = ERROR;
+
+        if (memberWord.getIsLibraryWord()) {
+            // 라이브러리 단어 삭제
+            memberWord.unregisterLibraryWord();
+            responseType = DELETED;
+        }else{
+            // 라이브러리 단어 추가
+            memberWord.registerLibraryWord();
+
+            responseType = REGISTERED;
+        }
+        memberWordRepository.save(memberWord);
+
+        return libraryMapper.toUpdateLibraryResponseDto(responseType, libraryId);
     }
 
-    /**
-     * Delete Library Word Service (라이브러리 단어 삭제 서비스)
-     *
-     * @param id 삭제할 라이브러리 단어
-     * @return 삭제 성공시 true, 그렇지 않으면 false
-     */
-    @Transactional
-    public boolean deleteLibrary(Long id){
-        return memberWordRepository.findById(id)
-                .map(libraryWord ->{
-                    libraryWord.unregisterLibraryWord();
-                    return true;
-                })
-                .orElseGet(()-> {
-                    log.error("라이브러리 단어를 찾을 수 없습니다. id = {}", id);
-                    return false;
-                });
-    }
 
     /**
      * Search Library Word Service (라이브러리 단어 조회 서비스)
@@ -67,7 +74,7 @@ public class LibraryService {
      * @param member 라이브러리 단어를 조회하기 위한 사용자 엔티티
      * @return List<LibraryDto> LibraryPageDto를 구성하기 위한 Dto 반환
      */
-    public List<LibraryResponseDto> getLibrary(Member member){
+    public List<LibraryWordDto> getLibrary(Member member){
         List<MemberWord> memberWordList = memberWordRepository.findLibraryByMember(member, PageRequest.of(0, 20)).getContent();
         return libraryMapper.toLibraryDtos(memberWordList);
     }

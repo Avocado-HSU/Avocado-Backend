@@ -53,16 +53,16 @@ public class WordService {
         if(validateWord(word)){
             // 2. GPT 모델 호출
             // 4. Word Service 호출
-                // createLibraryWord(Member member, String english, String etymology, String korean, String audioUrl);
+            // createLibraryWord(Member member, String english, String etymology, String korean, String audioUrl);
             // 6. Dto 구성 및 반환 (MemberWord ID 포함)
-                // a. 캐릭터 반환 (characterService 호출)
-                // b. 단어 반환
-                // c. 단어의 의미 (장문)
-                // d. 어원 분리 (상단 파싱)
-                // e. 예문 (예문과 뜻)
-                // f. 단어를 쉽게 외우는 팁
-                // g. 유사 단어 5개
-                // i. 같은 접두사를 가진 단어 5개
+            // a. 캐릭터 반환 (characterService 호출)
+            // b. 단어 반환
+            // c. 단어의 의미 (장문)
+            // d. 어원 분리 (상단 파싱)
+            // e. 예문 (예문과 뜻)
+            // f. 단어를 쉽게 외우는 팁
+            // g. 유사 단어 5개
+            // i. 같은 접두사를 가진 단어 5개
         }else{
             // false DTO 반환
         }
@@ -79,13 +79,13 @@ public class WordService {
      * @param korean 영어 단어 한글 해석
      */
     @Transactional
-    public Long insertMemberWord(
+    public MemberWord insertMemberWord(
             Member member, String english, String etymology, String korean
     ) {
         Optional<Word> findWord = wordRepository.findWordByString(english);
         Word word;
         if(findWord.isEmpty()){
-           // 검색한 Word가 DB에 저장되어 있지 않은 경우
+            // 검색한 Word가 DB에 저장되어 있지 않은 경우
             word = wordRepository.save(
                     Word.builder()
                             .english(english)
@@ -114,10 +114,10 @@ public class WordService {
             );
         }else{
             // 해당 Word가 Library에 등록되어 있을 경우
-           memberWord = findMemberWord.get();
-           memberWord.plusMemberWordSearchCount();
+            memberWord = findMemberWord.get();
+            memberWord.plusMemberWordSearchCount();
         }
-        return memberWord.getId();
+        return memberWord;
     }
 
     /**
@@ -146,8 +146,8 @@ public class WordService {
         }
 
         //openFeign(FreeDictionary을 이용하여 마지막 검증 수행
-            //404 에러 발생 시 예외 처리 수행
-            //505 에러 발생 시 예외 처리 수행
+        //404 에러 발생 시 예외 처리 수행
+        //505 에러 발생 시 예외 처리 수행
 
         return true;
     }

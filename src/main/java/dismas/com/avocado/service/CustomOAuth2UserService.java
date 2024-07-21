@@ -1,17 +1,12 @@
 package dismas.com.avocado.service;
 
 import dismas.com.avocado.domain.Member;
-import dismas.com.avocado.domain.character.Character;
-import dismas.com.avocado.domain.character.CharacterDetail;
-import dismas.com.avocado.domain.character.MemberCharacter;
 import dismas.com.avocado.dto.OAuthDto.CustomOAuth2User;
 import dismas.com.avocado.dto.OAuthDto.KakaoResponse;
 import dismas.com.avocado.dto.OAuthDto.NaverResponse;
 import dismas.com.avocado.dto.OAuthDto.OAuth2Response;
 import dismas.com.avocado.dto.UserDTO;
 import dismas.com.avocado.repository.MemberRepository;
-import dismas.com.avocado.repository.character.CharacterDetailRepository;
-import dismas.com.avocado.repository.character.CharacterRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -20,17 +15,12 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final MemberRepository memberRepository;
-    private final CharacterDetailRepository characterDetailRepository;
-    private final CharacterRepository characterRepository;
     private final CharacterService characterService;
-
     @Override
     @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -74,6 +64,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userDTO.setUsername(username);
             userDTO.setName(oAuth2Response.getName());
             userDTO.setRole("ROLE_USER");
+
 
             return new CustomOAuth2User(userDTO);
         }

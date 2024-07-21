@@ -1,4 +1,5 @@
 package dismas.com.avocado.dto.libraryPage;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,17 +9,20 @@ import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
 
+/**
+ * Library Word Dto
+ * 서비스 계층에서 Mapping 수행
+ */
 @SuperBuilder
 @Jacksonized
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-public class LibraryPageResponseDto {
+@Getter @Setter
+public class LibraryWordDto {
 
-    // 캐릭터
-    public String characterImgUrl;
-    // 라이브러리 단어 리스트
-    public List<LibraryWordDto> libraryWordDtoList;
+    public Long LibraryId;
+    public String English;
+    public String Korean;
+    public List<String> etymologyList;
 
 }

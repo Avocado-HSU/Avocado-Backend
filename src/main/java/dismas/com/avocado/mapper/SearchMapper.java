@@ -1,10 +1,8 @@
 package dismas.com.avocado.mapper;
-
 import dismas.com.avocado.domain.word.MemberWord;
 import dismas.com.avocado.dto.searchPage.RecentSearchWordResponseDto;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -25,6 +25,7 @@ public class AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
     private final DayRepository dayRepository;
+    private final MemberService memberService;
 
     private final MainPageMapper mainPageMapper;
 //
@@ -119,9 +120,12 @@ public class AttendanceService {
             throw new IllegalArgumentException("클라이언트 TimeStamp 그리고 서버 TimeStamp 불일치");
         }
 
+
         if(attendanceRepository.findAttendanceByDate(member, date).isEmpty()){
             // 당일 출석케크가 진행되지 아니한 경우
             Optional<Day> dayOptional = dayRepository.findByDate(date);
+
+            memberService.updatePoint(member, 100L);
             if(dayOptional.isEmpty())
             {
                 // 날짜가 존재하지 아니한 경우

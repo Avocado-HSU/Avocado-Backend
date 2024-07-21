@@ -64,7 +64,9 @@ public class JWTFilter extends OncePerRequestFilter {
         if (jwtUtil.isExpired(token)) {
 
             System.out.println("token 기간 소멸");
-            filterChain.doFilter(request, response);
+            // filterChain.doFilter(request, response);
+            //토큰 기간 소멸시 루트 엔드포인트로 리다이렉션
+            response.sendRedirect("/");
 
             //조건이 해당되면 메소드 종료 -> 필수적인 요소
             return;
@@ -91,6 +93,7 @@ public class JWTFilter extends OncePerRequestFilter {
     }
     private boolean isExcludedPath(String requestURI) {
         return pathMatcher.match("/", requestURI)
+                || pathMatcher.match("/login", requestURI)
                 || pathMatcher.match("/swagger-ui/index.html", requestURI)
                 || pathMatcher.match("/swagger-ui/**", requestURI)
                 || pathMatcher.match("/v3/api-docs/**", requestURI)

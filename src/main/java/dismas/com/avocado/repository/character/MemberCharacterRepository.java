@@ -12,8 +12,6 @@ import java.util.Optional;
 @Repository
 public interface MemberCharacterRepository extends JpaRepository<MemberCharacter, Long> {
 
-    MemberCharacter findByMemberIdAndIsSelectedTrue(Long memberId);
-
     @Query("select mc from MemberCharacter mc join fetch mc.character where mc.member = :member and mc.isSelected = true")
     Optional<MemberCharacter> findMemberCharacter(@Param("member") Member member);
 

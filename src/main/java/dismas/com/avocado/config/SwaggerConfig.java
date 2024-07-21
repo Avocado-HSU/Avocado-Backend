@@ -34,7 +34,7 @@ public class SwaggerConfig {
     private Info apiInfo() {
         return new Info()
                 .title("aVocado API")
-                .description("API Test for aVocado project")
+                .description("아보카도 API 테스트를 위한 SWAGGER 문서")
                 .version("3.0");
     }
 }
