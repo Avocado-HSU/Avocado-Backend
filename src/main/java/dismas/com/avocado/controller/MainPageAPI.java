@@ -3,6 +3,7 @@ package dismas.com.avocado.controller;
 
 import dismas.com.avocado.domain.Member;
 import dismas.com.avocado.domain.word.MemberWord;
+import dismas.com.avocado.dto.wordPage.SearchRequestType;
 import dismas.com.avocado.dto.mainPage.*;
 import dismas.com.avocado.dto.searchPage.RecentSearchWordResponseDto;
 import dismas.com.avocado.dto.wordPage.SearchWordResponseDto;
@@ -11,6 +12,11 @@ import dismas.com.avocado.mapper.WordPageMapper;
 import dismas.com.avocado.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,6 +28,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "MainPage", description = "메인 페이지 관련 API")
 public class MainPageAPI {
 
     private final MainPageMapper mainPageMapper;
@@ -41,23 +48,37 @@ public class MainPageAPI {
      * - 추천 단어 반환
      * @param member 사용자
      */
+    @Operation(summary = "Get MainPage Response Info", description = "메인 페이지를 렌더링하기 위한 정보를 제공합니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "해당 ID의 유저가 존재하지 않습니다"),
+            @ApiResponse(responseCode = "500", description = "OpenAI ERROR")
+    })
     @PostMapping("api/main/{id}")
     public ResponseEntity<MainPageResponseDto> getMainPage(
-            @Parameter(description = "유저 id", required = true, example = "1")
-            @PathVariable("id") Member member,
+            @PathVariable("id")
+            @Positive(message = "유저 ID는 양수입니다.")
+            @Parameter(name = "id", description = "로그인 유저 ID, Long Type", example = "3", required = true)
+            @Schema(type = "integer", format = "int64")
+            Member member,
             @RequestBody MainPageRequestDto requestDto
     ) {
         MainPageCharacterDto mainPageCharacterDto;
         PopularWordDto popularWordDto;
         WeeklyAttendanceDto weeklyAttendanceDto;
         RecommendWordDto recommendWordDto;
+
         try {
+            // MainPage Mapper를 통해 처리 필요
             mainPageCharacterDto = new MainPageCharacterDto(characterService.getCharacterImage(member), "Hi" + member.getName());
             weeklyAttendanceDto = attendanceService.getWeeklyAttendance(member, requestDto.getDate());
             popularWordDto = popularWordService.getPopularWord();
             recommendWordDto = wordService.getRecommendWord();
 
         } catch (Exception e) {
+            // 에러를 보다 세분화해서 처리할 필요 잇음
+                // 1. OpenAI에서 발생하는 에러 처리 필요
+                // 2. 출석체크에서 간혈적으로 발생하는 에러 처리 필요
             log.error("출석 체크 서비스 에러 발생");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(mainPageMapper.toMainPageResponseDto(
@@ -88,26 +109,48 @@ public class MainPageAPI {
      * @param member 사용자 Entity
      * @param word 사용자가 입력한 검색값
      */
+
+    @Operation(summary = "Get Search Result at MainPage", description = "메인 페이지에서 검색 창을 사용할 경우 호출합니다. WordPage 에 대한 정보를 반환합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "해당 ID의 유저가 존재하지 않습니다"),
+            @ApiResponse(responseCode = "404", description = "잘못된 단어를 검색하였습니다 - 단어 검증 실패"),
+            @ApiResponse(responseCode = "503", description = "OpenAI ERROR")
+    })
     @GetMapping("api/main/{id}/search/{word}")
-    public ResponseEntity<SearchWordResponseDto> searchWord(
-            @Parameter(description = "유저 id", required = true, example = "1")
-            @PathVariable("id") Member member,
-            @Parameter(description = "단어", required = true, example = "단어")
-            @PathVariable("word") String word){
+    public ResponseEntity<SearchWordResponseDto> wordSearch(
+            @Positive(message = "유저 ID는 양수입니다.")
+            @Parameter(name = "id", description = "로그인 유저 ID, Long Type", example = "3", required = true)
+            @PathVariable("id")
+            @Schema(type = "integer", format = "int64")
+            Member member,
+
+            @Parameter(name = "word", description = "검색하고자 하는 영어 단어 (한글 불가)", example = "hospitalization", required = true)
+            @PathVariable("word")
+            @Schema(type = "integer", format = "int64")
+            String word
+    ) {
         if(wordService.validateWord(word)){
             try {
-                String characterImgUrl = characterService.getCharacterImage(member);
-                Map<SearchRequestType, String> contents = openAiService.handleSearchRequest(word);
-                // 파싱 진행
-                MemberWord memberWord = wordService.insertMemberWord(member, word, "", "");
-                return ResponseEntity.ok(wordPageMapper.toSearchWordResponseDto(true, memberWord.getId(), characterImgUrl, contents));
+                Map<SearchRequestType,String> contents = wordService.searchWord(member, word);
+                //wordService.parsingWord(contents);
+                MemberWord createdWord = wordService.insertMemberWord(member, word, "어원", "한글 뜻");
+
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(wordPageMapper.toSearchWordResponseDto(
+                                true,
+                                createdWord.getIsLibraryWord(),
+                                createdWord.getId(),
+                                characterService.getCharacterImage(member),
+                                contents
+                        ));
             }catch (RuntimeException e){
-                // OpenAI 에러
-                return ResponseEntity.internalServerError().body(wordPageMapper.toSearchWordResponseDto(false, null, null, null));
+                // OpenAI 에러 : 503
+                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
             }
         }else{
             // 단어 검증 실패
-            return ResponseEntity.badRequest().body(wordPageMapper.toSearchWordResponseDto(false, null,null, null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
@@ -118,10 +161,18 @@ public class MainPageAPI {
      * @return RecentSearchWordResponseDto 최근 검색 단어 반환
      */
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get Recent Search Info", description = "사용자가 최근 검색한 단어 10개를 반환합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "해당 ID의 유저가 존재하지 않습니다")
+    })
     @GetMapping("api/main/{id}/search/recent")
     public RecentSearchWordResponseDto getRecentSearch(
-            @Parameter(description = "유저 id", required = true, example = "1")
-            @PathVariable("id") Member member
+            @Positive(message = "유저 ID는 양수입니다.")
+            @Parameter(name = "id", description = "로그인 유저 ID, Long Type", example = "3", required = true)
+            @PathVariable("id")
+            @Schema(type = "integer", format = "int64")
+            Member member
     ){
         return wordService.getRecentSearchWord(member);
     }

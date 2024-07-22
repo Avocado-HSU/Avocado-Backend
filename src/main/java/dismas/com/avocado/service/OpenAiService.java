@@ -1,7 +1,7 @@
 package dismas.com.avocado.service;
 
-import dismas.com.avocado.controller.ChatBotRequestType;
-import dismas.com.avocado.controller.SearchRequestType;
+import dismas.com.avocado.dto.chatBotPage.ChatBotRequestType;
+import dismas.com.avocado.dto.wordPage.SearchRequestType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static dismas.com.avocado.controller.SearchRequestType.MEANS;
-import static dismas.com.avocado.controller.SearchRequestType.SEPARATE;
+import static dismas.com.avocado.dto.wordPage.SearchRequestType.MEANS;
+import static dismas.com.avocado.dto.wordPage.SearchRequestType.SEPARATE;
 
 @Service
 @RequiredArgsConstructor

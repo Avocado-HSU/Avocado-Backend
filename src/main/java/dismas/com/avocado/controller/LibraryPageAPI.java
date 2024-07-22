@@ -3,27 +3,35 @@ package dismas.com.avocado.controller;
 import dismas.com.avocado.domain.Member;
 import dismas.com.avocado.domain.word.MemberWord;
 import dismas.com.avocado.dto.libraryPage.LibraryPageResponseDto;
-import dismas.com.avocado.dto.libraryPage.LibraryWordDto;
 import dismas.com.avocado.dto.libraryPage.UpdateLibraryResponseDto;
+import dismas.com.avocado.dto.libraryPage.UpdateLibraryResponseType;
+import dismas.com.avocado.dto.wordPage.SearchRequestType;
 import dismas.com.avocado.dto.wordPage.SearchWordResponseDto;
 import dismas.com.avocado.mapper.LibraryMapper;
 import dismas.com.avocado.mapper.WordPageMapper;
-import dismas.com.avocado.repository.word.MemberWordRepository;
 import dismas.com.avocado.service.CharacterService;
 import dismas.com.avocado.service.LibraryService;
-import dismas.com.avocado.service.OpenAiService;
 import dismas.com.avocado.service.WordService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
+
+import static dismas.com.avocado.dto.libraryPage.UpdateLibraryResponseType.DELETED;
+import static dismas.com.avocado.dto.libraryPage.UpdateLibraryResponseType.REGISTERED;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "LibraryPage", description = "라이브러리 페이지 관련 API")
 public class LibraryPageAPI {
 
     private final LibraryMapper libraryMapper;
@@ -32,8 +40,6 @@ public class LibraryPageAPI {
     private final CharacterService characterService;
     private final LibraryService libraryService;
     private final WordService wordService;
-    private final OpenAiService openAiService;
-    private final MemberWordRepository memberWordRepository;
 
     /**
      * Library Page API
@@ -43,40 +49,50 @@ public class LibraryPageAPI {
      * @param member 사용자 ID
      * @return LibraryPageResponseDto 라이브러리 페이지를 구성하기 위한 DTO 반환
      */
+    @Operation(summary = "Get Library Page Response Info", description = "라이브러리 페이지를 렌더링하기 위한 정보를 제공합니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "해당 ID의 유저가 존재하지 않습니다"),
+    })
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("api/library/{id}")
     public LibraryPageResponseDto getLibraryPage(
-            @Parameter(description = "유저 id", required = true, example = "1")
-            @PathVariable("id") Member member){
-
-        List<LibraryWordDto> libraryWordDtos = libraryService.getLibrary(member);
-
-        // 추후 캐릭터 이미지 가져오는 로직 추가
-        String imgUrl = characterService.getCharacterImage(member);
-
-        return libraryMapper.toLibraryPageDto(libraryWordDtos, imgUrl);
+            @PathVariable("id")
+            @Positive(message = "유저 ID는 양수입니다.")
+            @Parameter(name = "id", description = "로그인 유저 ID, Long Type", example = "3", required = true)
+            Member member
+    ){
+        return libraryMapper.toLibraryPageDto(
+                libraryService.getLibrary(member),
+                characterService.getCharacterImage(member));
     }
+
 
     /**
      * Delete Library Word API (라이브러리 단어 삭제 API)
-     *
      * @param libraryId 라이브러리 단어 ID (서버에서 Library Page 요청 시 제공)
-     *
      */
+    @Operation(summary = "Delete Library Word", description = "라이브러리 단어를 삭제합니다. (현재 기획에 X, 2차 MVP)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "해당 ID의 유저가 존재하지 않습니다"),
+            @ApiResponse(responseCode = "500", description = "라이브러리 삭제 실패")
+    })
     @DeleteMapping("api/library/{libraryId}")
     public ResponseEntity<UpdateLibraryResponseDto> deleteLibraryWord(
-
-            @Parameter(description = "라이브러리 id", required = true, example = "7")
-            @PathVariable("libraryId") Long libraryId){
+            @PathVariable("libraryId")
+            @Positive(message = "라이브러리 ID는 양수입니다.")
+            @Parameter(name = "libraryId", description = "라이브러리에 등록된 단어 ID, Long Type", example = "3", required = true)
+            @Schema(type = "integer", format = "int64")
+            Long libraryId
+    ){
         UpdateLibraryResponseDto returnDto = libraryService.updateLibrary(libraryId);
+        UpdateLibraryResponseType responseType = returnDto.getResponseType();
 
-        switch(returnDto.getResponseType()){
-            case REGISTERED, DELETED -> {
-                return ResponseEntity.ok(returnDto);
-            }
-            default -> {
-                return ResponseEntity.internalServerError().body(returnDto);
-            }
+        if (responseType == REGISTERED || responseType == DELETED) {
+            return ResponseEntity.ok(returnDto);
+        } else {
+            return ResponseEntity.internalServerError().body(returnDto);
         }
     }
 
@@ -88,27 +104,47 @@ public class LibraryPageAPI {
      * @param member 사용자 ID
      * @param word 라이브러리 단어 ID (서버에서 Library Page 요청 시 제공)
      */
+    @Operation(summary = "Get Search Result at LibraryPage", description = "라이브러리 페이지에서 검색 창을 사용할 경우 호출합니다. WordPage 에 대한 정보를 반환합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "해당 ID의 유저가 존재하지 않습니다"),
+            @ApiResponse(responseCode = "404", description = "잘못된 단어를 검색하였습니다 - 단어 검증 실패"),
+            @ApiResponse(responseCode = "503", description = "OpenAI ERROR")
+    })
     @GetMapping("api/library/{id}/search/{word}")
-    public ResponseEntity<SearchWordResponseDto> searchWord(
-            @Parameter(description = "유저 id", required = true, example = "1")
-            @PathVariable("id") Member member,
-            @Parameter(description = "사과", required = true, example = "apple")
-            @PathVariable("word") String word){
+    public ResponseEntity<SearchWordResponseDto> wordSearch(
+            @Positive(message = "유저 ID는 양수입니다.")
+            @Parameter(name = "id", description = "로그인 유저 ID, Long Type", example = "3", required = true)
+            @PathVariable("id")
+            @Schema(type = "integer", format = "int64")
+            Member member,
 
+            @Parameter(name = "word", description = "검색하고자 하는 영어 단어 (한글 불가)", example = "hospitalization", required = true)
+            @PathVariable("word")
+            @Schema(type = "string")
+            String word
+    ) {
         if(wordService.validateWord(word)){
             try {
-                String characterImgUrl = characterService.getCharacterImage(member);
-                Map<SearchRequestType, String> contents = openAiService.handleSearchRequest(word);
-                // 파싱 진행
-                MemberWord memberWord = wordService.insertMemberWord(member, word, "", "");
-                return ResponseEntity.ok(wordPageMapper.toSearchWordResponseDto(true, memberWord.getId(), characterImgUrl, contents));
+                Map<SearchRequestType,String> contents = wordService.searchWord(member, word);
+                //wordService.parsingWord(contents);
+                MemberWord createdWord = wordService.insertMemberWord(member, word, "어원", "한글 뜻");
+
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(wordPageMapper.toSearchWordResponseDto(
+                                true,
+                                createdWord.getIsLibraryWord(),
+                                createdWord.getId(),
+                                characterService.getCharacterImage(member),
+                                contents
+                        ));
             }catch (RuntimeException e){
-                // OpenAI 에러
-                return ResponseEntity.internalServerError().body(wordPageMapper.toSearchWordResponseDto(false, null, null, null));
+                // OpenAI 에러 : 503
+                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
             }
         }else{
             // 단어 검증 실패
-            return ResponseEntity.badRequest().body(wordPageMapper.toSearchWordResponseDto(false, null,null, null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 

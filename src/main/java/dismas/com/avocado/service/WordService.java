@@ -1,14 +1,13 @@
 package dismas.com.avocado.service;
 
+import dismas.com.avocado.dto.wordPage.SearchRequestType;
 import dismas.com.avocado.domain.Member;
 import dismas.com.avocado.domain.word.MemberWord;
 import dismas.com.avocado.domain.word.Word;
-import dismas.com.avocado.dto.WordDto;
 import dismas.com.avocado.dto.mainPage.RecommendWordDto;
 import dismas.com.avocado.dto.searchPage.RecentSearchWordResponseDto;
 import dismas.com.avocado.mapper.MainPageMapper;
 import dismas.com.avocado.mapper.SearchMapper;
-import dismas.com.avocado.repository.MemberRepository;
 import dismas.com.avocado.repository.word.MemberWordRepository;
 import dismas.com.avocado.repository.word.WordRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * 단어 관련 서비스
@@ -35,8 +34,10 @@ import java.util.stream.Collectors;
 public class WordService {
 
     private final WordRepository wordRepository;
-    private final MemberRepository memberRepository;
     private final MemberWordRepository memberWordRepository;
+
+    private final OpenAiService openAiService;
+    private final WordService wordService;
 
     private final SearchMapper searchMapper;
     private final MainPageMapper mainPageMapper;
@@ -47,25 +48,10 @@ public class WordService {
      * @param member 사용자 ID
      * @param word 검색하고자 하는 word
      */
-    public void searchWord(Member member, String word){
-
-        // 1. 단어 검증
-        if(validateWord(word)){
-            // 2. GPT 모델 호출
-            // 4. Word Service 호출
-            // createLibraryWord(Member member, String english, String etymology, String korean, String audioUrl);
-            // 6. Dto 구성 및 반환 (MemberWord ID 포함)
-            // a. 캐릭터 반환 (characterService 호출)
-            // b. 단어 반환
-            // c. 단어의 의미 (장문)
-            // d. 어원 분리 (상단 파싱)
-            // e. 예문 (예문과 뜻)
-            // f. 단어를 쉽게 외우는 팁
-            // g. 유사 단어 5개
-            // i. 같은 접두사를 가진 단어 5개
-        }else{
-            // false DTO 반환
-        }
+    @Transactional
+    public Map<SearchRequestType, String> searchWord(Member member, String word){
+            return openAiService.handleSearchRequest(word);
+            // 파싱 로직 추가 필요
     }
 
     /**

@@ -1,4 +1,4 @@
-package dismas.com.avocado.dto.libraryPage;
+package dismas.com.avocado.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +13,9 @@ import lombok.extern.jackson.Jacksonized;
 @NoArgsConstructor
 @Getter
 @Setter
-public class LibraryDeleteResponseDto {
-    public boolean isDeleted;
+public class UserDto {
+    //DB에 저장하게 될 유저 정보 추후 확장 가능
+    public String role;
+    public String name;
+    public String username;
 }

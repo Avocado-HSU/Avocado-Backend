@@ -1,6 +1,7 @@
 package dismas.com.avocado.dto.mainPage;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,22 +15,22 @@ import lombok.extern.jackson.Jacksonized;
 @NoArgsConstructor
 @Getter
 @Setter
+@Schema(description = "메인 페이지 Response Dto: api/main/{id}에서 메인 페이지를 위한 렌더링 정보 반환")
 public class MainPageResponseDto {
 
-    // 상단 프로필
-
-    // 캐릭터 이미지 및 텍스트
+    @Schema(description = "캐릭터 이미지 URL")
     public String characterImageUrl;
 
+    @Schema(description = "캐릭터 메세지")
     public String message;
 
-    // 주간 출석 내역
+    @Schema(description = "주간 출석 여부")
     public WeeklyAttendanceDto weeklyAttendanceDto;
 
-    // 인기 검색어
+    @Schema(description = "인기 검색어 리스트")
     public PopularWordDto popularWordDto;
 
-    // 추천 검색어
+    @Schema(description = "추천 단어 리스트")
     public RecommendWordDto recommendWordDto;
 
 

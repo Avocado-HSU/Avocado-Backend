@@ -1,7 +1,7 @@
 package dismas.com.avocado.jwt;
 
 import dismas.com.avocado.dto.OAuthDto.CustomOAuth2User;
-import dismas.com.avocado.dto.UserDTO;
+import dismas.com.avocado.dto.UserDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -77,7 +77,7 @@ public class JWTFilter extends OncePerRequestFilter {
         String role = jwtUtil.getRole(token);
 
         //userDTO를 생성하여 값 set
-        UserDTO userDTO = new UserDTO();
+        UserDto userDTO = new UserDto();
         userDTO.setUsername(username);
         userDTO.setRole(role);
 
