@@ -45,7 +45,8 @@ public class SecurityConfig {
 
                         CorsConfiguration configuration = new CorsConfiguration();
                         //해당 부분 프론트 엔드 주소 -> 디폴트 값으로 리엑트로 뒀습니다.
-                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                        // ip 변동
+                        configuration.setAllowedOrigins(Collections.singletonList("http://avocado-hsu.kro.kr"));
                         configuration.setAllowedMethods(Collections.singletonList("*"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Collections.singletonList("*"));

@@ -1,18 +1,18 @@
 import React from 'react';
 
 const onNaverLogin = () => {
-  window.location.href = "http://localhost:80/oauth2/authorization/naver";
+  window.location.href = "http://avocado-hsu.kro.kr/oauth2/authorization/naver";
 }
 const onKakaoLogin = () => {
-  window.location.href = "http://localhost:80/oauth2/authorization/kakao";
+  window.location.href = "http://avocado-hsu.kro.kr/oauth2/authorization/kakao";
 }
 
 const loginPageCheckEndPoind = () => {
-  window.location.href = "http://localhost:80/health";
+  window.location.href = "http://avocado-hsu.kro.kr/health";
 }
 
 const getUserInfo = () => {
-  fetch("http://localhost:80/api/user/me", {
+  fetch("http://avocado-hsu.kro.kr/api/user/me", {
     method: "GET",
     credentials: 'include' // 쿠키를 요청에 포함시킵니다
   })
@@ -31,7 +31,7 @@ const getUserInfo = () => {
 
 // 데이터 가져오기 함수
 const getData = () => {
-  fetch("http://localhost:80/yaho", {
+  fetch("http://avocado-hsu.kro.kr/yaho", {
     method: "GET",
     credentials: 'include'
   })
