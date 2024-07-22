@@ -37,7 +37,6 @@ public class WordService {
     private final MemberWordRepository memberWordRepository;
 
     private final OpenAiService openAiService;
-    private final WordService wordService;
 
     private final SearchMapper searchMapper;
     private final MainPageMapper mainPageMapper;
