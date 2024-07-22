@@ -23,11 +23,11 @@ import java.util.List;
 public class LibraryWordDto {
 
     @Schema(description = "해당 단어의 라이브러리 ID")
-    public Long LibraryId;
+    public Long libraryId;
     @Schema(description = "영어 단어")
-    public String English;
+    public String english;
     @Schema(description = "영어 단어 한글 해석")
-    public String Korean;
+    public String korean;
     @Schema(description = "어원 리스트를 String List로 반환")
     public List<String> etymologyList;
 

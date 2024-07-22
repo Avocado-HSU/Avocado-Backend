@@ -3,9 +3,9 @@ package dismas.com.avocado.controller;
 
 import dismas.com.avocado.domain.Member;
 import dismas.com.avocado.domain.word.MemberWord;
-import dismas.com.avocado.dto.wordPage.SearchRequestType;
 import dismas.com.avocado.dto.mainPage.*;
 import dismas.com.avocado.dto.searchPage.RecentSearchWordResponseDto;
+import dismas.com.avocado.dto.wordPage.SearchRequestType;
 import dismas.com.avocado.dto.wordPage.SearchWordResponseDto;
 import dismas.com.avocado.mapper.MainPageMapper;
 import dismas.com.avocado.mapper.WordPageMapper;
@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -57,7 +56,6 @@ public class MainPageAPI {
     @PostMapping("api/main/{id}")
     public ResponseEntity<MainPageResponseDto> getMainPage(
             @PathVariable("id")
-            @Positive(message = "유저 ID는 양수입니다.")
             @Parameter(name = "id", description = "로그인 유저 ID, Long Type", example = "3", required = true)
             @Schema(type = "integer", format = "int64")
             Member member,
@@ -119,7 +117,6 @@ public class MainPageAPI {
     })
     @GetMapping("api/main/{id}/search/{word}")
     public ResponseEntity<SearchWordResponseDto> wordSearch(
-            @Positive(message = "유저 ID는 양수입니다.")
             @Parameter(name = "id", description = "로그인 유저 ID, Long Type", example = "3", required = true)
             @PathVariable("id")
             @Schema(type = "integer", format = "int64")
@@ -168,7 +165,6 @@ public class MainPageAPI {
     })
     @GetMapping("api/main/{id}/search/recent")
     public RecentSearchWordResponseDto getRecentSearch(
-            @Positive(message = "유저 ID는 양수입니다.")
             @Parameter(name = "id", description = "로그인 유저 ID, Long Type", example = "3", required = true)
             @PathVariable("id")
             @Schema(type = "integer", format = "int64")

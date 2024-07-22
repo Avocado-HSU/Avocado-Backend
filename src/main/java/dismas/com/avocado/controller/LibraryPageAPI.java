@@ -18,7 +18,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +57,6 @@ public class LibraryPageAPI {
     @GetMapping("api/library/{id}")
     public LibraryPageResponseDto getLibraryPage(
             @PathVariable("id")
-            @Positive(message = "유저 ID는 양수입니다.")
             @Parameter(name = "id", description = "로그인 유저 ID, Long Type", example = "3", required = true)
             Member member
     ){
@@ -81,7 +79,6 @@ public class LibraryPageAPI {
     @DeleteMapping("api/library/{libraryId}")
     public ResponseEntity<UpdateLibraryResponseDto> deleteLibraryWord(
             @PathVariable("libraryId")
-            @Positive(message = "라이브러리 ID는 양수입니다.")
             @Parameter(name = "libraryId", description = "라이브러리에 등록된 단어 ID, Long Type", example = "3", required = true)
             @Schema(type = "integer", format = "int64")
             Long libraryId
@@ -113,7 +110,6 @@ public class LibraryPageAPI {
     })
     @GetMapping("api/library/{id}/search/{word}")
     public ResponseEntity<SearchWordResponseDto> wordSearch(
-            @Positive(message = "유저 ID는 양수입니다.")
             @Parameter(name = "id", description = "로그인 유저 ID, Long Type", example = "3", required = true)
             @PathVariable("id")
             @Schema(type = "integer", format = "int64")

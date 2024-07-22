@@ -55,7 +55,6 @@ public class WordPageAPI {
     })
     @GetMapping("api/word/{id}/search/{word}")
     public ResponseEntity<SearchWordResponseDto> wordSearch(
-            @Positive(message = "유저 ID는 양수입니다.")
             @Parameter(name = "id", description = "로그인 유저 ID, Long Type", example = "3", required = true)
             @PathVariable("id")
             @Schema(type = "integer", format = "int64")
@@ -102,7 +101,6 @@ public class WordPageAPI {
     @PostMapping("api/word/library/{libraryId}")
     private ResponseEntity<UpdateLibraryResponseDto> updateLibrary(
             @PathVariable("libraryId")
-            @Positive(message = "라이브러리 ID는 양수입니다.")
             @Parameter(name = "libraryId", description = "라이브러리에 등록된 단어 ID, Long Type", example = "3", required = true)
             @Schema(type = "integer", format = "int64")
             Long libraryId){
