@@ -23,9 +23,9 @@ public class LibraryMapper {
     public List<LibraryWordDto> toLibraryDtos(List<MemberWord> memberWords) {
         return memberWords.stream()
                 .map(memberWord -> LibraryWordDto.builder()
-                        .LibraryId(memberWord.getId())
-                        .English(memberWord.getWord().getEnglish())
-                        .Korean(memberWord.getWord().getKorean())
+                        .libraryId(memberWord.getId())
+                        .english(memberWord.getWord().getEnglish())
+                        .korean(memberWord.getWord().getKorean())
                         .build())
                 .collect(Collectors.toList());
     }
