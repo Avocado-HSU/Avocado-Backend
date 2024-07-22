@@ -1,6 +1,0 @@
-spring:
-  application:
-    name: aVocado
-
-server:
-  port: 80
