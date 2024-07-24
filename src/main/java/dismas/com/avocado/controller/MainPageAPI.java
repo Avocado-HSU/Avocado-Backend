@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 public class MainPageAPI {
 
     private final MainPageMapper mainPageMapper;
-
     private final WordService wordService;
     private final AttendanceService attendanceService;
     private final PopularWordService popularWordService;
