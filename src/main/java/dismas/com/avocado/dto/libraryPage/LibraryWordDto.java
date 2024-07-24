@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -22,6 +23,8 @@ import java.util.List;
 @Schema(description = "라이브러리 단어 Dto: api/library/{id}에서 LibraryWordPageDto에 리스트 형식으로 담겨서 반환")
 public class LibraryWordDto {
 
+    @Schema(description = "라이브러리 등록 시간")
+    public LocalDateTime libraryUpdatedTime;
     @Schema(description = "해당 단어의 라이브러리 ID")
     public Long libraryId;
     @Schema(description = "영어 단어")

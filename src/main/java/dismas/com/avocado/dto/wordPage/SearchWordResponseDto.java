@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
+import java.util.List;
 import java.util.Map;
 
 @SuperBuilder
@@ -24,12 +25,15 @@ public class SearchWordResponseDto {
     Boolean isSuccess;
 
     @Schema(description = "해당 단어가 라이브러리에 등록되어 있는지 여부 " +
-            "등록되어 있을 경우   : true - 라이브러리 등록 버튼 활성화 " +
+            "등록되어 있을 경우 : true - 라이브러리 등록 버튼 활성화 " +
             "등록되지 아니할 경우 : false - 라이브러리 등록 버튼 비활성화 or 배너")
     Boolean isLibraryRegistered;
 
     @Schema(description = "라이브러리 단어 등록/삭제 요청을 위한 ID")
     Long libraryId;
+
+    @Schema(description = "한글 뜻")
+    String korean;
 
     @Schema(description = "캐릭터 이미지")
     String characterImgUrl;

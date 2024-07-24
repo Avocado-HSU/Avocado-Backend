@@ -18,6 +18,7 @@ import static dismas.com.avocado.dto.wordPage.SearchRequestType.SEPARATE;
 @Service
 @RequiredArgsConstructor
 public class OpenAiService {
+
     @Autowired
     private ParsingService parsingService;
 

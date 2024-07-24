@@ -73,13 +73,6 @@ public class ChatBotAPI {
     }
 
 
-
-
-
-
-
-
-
     @Operation(summary = "Request Word Info to ChatBot", description = "사용자가 챗봇에게 단어 관련 질문을 전달합니다. 이후 답을 반환받습니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),

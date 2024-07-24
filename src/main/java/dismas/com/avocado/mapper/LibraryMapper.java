@@ -26,6 +26,7 @@ public class LibraryMapper {
                         .libraryId(memberWord.getId())
                         .english(memberWord.getWord().getEnglish())
                         .korean(memberWord.getWord().getKorean())
+                        .libraryUpdatedTime(memberWord.getUpdatedAt())
                         .build())
                 .collect(Collectors.toList());
     }

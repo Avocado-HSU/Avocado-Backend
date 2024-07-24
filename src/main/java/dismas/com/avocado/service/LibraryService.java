@@ -10,6 +10,7 @@ import dismas.com.avocado.repository.word.MemberWordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,8 @@ import static dismas.com.avocado.dto.libraryPage.UpdateLibraryResponseType.*;
 @RequiredArgsConstructor
 public class LibraryService {
 
+    
+
     private final MemberWordRepository memberWordRepository;
     private final LibraryMapper libraryMapper;
 
@@ -41,7 +44,7 @@ public class LibraryService {
      */
     @Transactional
     public UpdateLibraryResponseDto updateLibrary(Long libraryId){
-        // 라이브러리 단어의 최대 갯수 20개 - 20개 넘으면 추가 X, 클라이언트에 전달하는 로직 필요
+
         Optional<MemberWord> optionalMemberWord = memberWordRepository.findById(libraryId);
 
         if (optionalMemberWord.isEmpty()) {
@@ -58,7 +61,6 @@ public class LibraryService {
         }else{
             // 라이브러리 단어 추가
             memberWord.registerLibraryWord();
-
             responseType = REGISTERED;
         }
         memberWordRepository.save(memberWord);
