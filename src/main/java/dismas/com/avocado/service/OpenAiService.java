@@ -50,14 +50,14 @@ public class OpenAiService {
             case DEFINE -> getMeans(word);
             case SIMILAR -> getSimilarWords(word);
             case ETYMOLOGY -> getEtymology(word);
-            case PREFIX -> getPrefix(word);
+           // case PREFIX -> getPrefix(word);
             case TIP -> getTips(word);
             default -> throw new RuntimeException("OpenAI 오류");
         };
     }
 
     private String getMeans(String word) {
-        String prompt = "영단어 '" + word + "'의 품사별 뜻을 알려주고 한국어로 알려줘!";
+        String prompt = "영단어 '" + word + "'의 품사별 뜻을 알려줘!";
         return openAiChatModel.call(prompt);
     }
 
@@ -67,22 +67,25 @@ public class OpenAiService {
     }
 
     private String getEtymology(String word) {
-        String prompt = "영단어  '" + word + "'를 어원으로 단어를 어원, 어근, 접두사, 접미사로 분류하여 설명하라. 각 분야는 ':'으로 분리하고 어떤부분이 어근이고 접두사이고 접미사인지 적고 설명은 아래쪽에해. 만약 적절한 접두사나 접미사가 없다면 비워둬.";
-        return openAiChatModel.call(prompt);
+        String prompt = "영단어 '"+word+"'를 어원으로 단어를 어원, 어근, 접두사, " +
+                "접미사로 분류하여 설명하라. 각 분야는 ':'으로 분리하고 어떤부분이 어근이고 접두사" +
+                "이고 접미사인지 적고 설명은 아래쪽에해. 만약 적절한 어원이나 접두사, 접미사가" +
+                " 없다면 없음이라 표기하지 말고 빈칸으로 표기해. 만약 접두사나 접미사가 " +
+                "없다면 빈칸으로만 표기하고 아래 설명에서는 그부분에 대한 설명을 생략해. 영단어는 한번 더 출력하지마.";
+        String a = openAiChatModel.call(prompt);
+        System.out.println(a);
+        return a;
     }
-
+/*
     private String getPrefix(String prefixSuffix) {
         String prompt = "영단어  '" + prefixSuffix + "'의 접두사/접미사가 접두사와 접미사가 같은 단어를 각각 3개씩 알려줘!";
         return openAiChatModel.call(prompt);
     }
-
+*/
     private String getTips(String word) {
         String prompt = "영단어  '" + word + "'에 대해 단어 암기 방법을 아래를 참고하여 설명하라 연상 기억법, 단어 분해, 반복 학습, 스토리텔링 네가지 분야로 설명할 것. 분야별로 ':' 형태로 나눠서 설명할 것\n";
-        // 파싱 후 반환 (parsing service)
-        return openAiChatModel.call(prompt);
+        String a=openAiChatModel.call(prompt);
+        System.out.println(a);
+        return a;
     }
-
-
-
-
 }

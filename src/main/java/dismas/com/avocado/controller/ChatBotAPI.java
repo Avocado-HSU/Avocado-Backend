@@ -2,8 +2,13 @@ package dismas.com.avocado.controller;
 
 import dismas.com.avocado.dto.chatBotPage.ChatBotRequestType;
 import dismas.com.avocado.dto.chatBotPage.ChatBotResponseDto;
+import dismas.com.avocado.dto.parsingPage.WordEtymologyDto;
+import dismas.com.avocado.dto.parsingPage.WordMeanDto;
+import dismas.com.avocado.dto.parsingPage.WordSimilarDto;
+import dismas.com.avocado.dto.parsingPage.WordTipsDto;
 import dismas.com.avocado.mapper.ChatBotMapper;
 import dismas.com.avocado.service.OpenAiService;
+import dismas.com.avocado.service.ParsingService;
 import dismas.com.avocado.service.WordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,6 +28,57 @@ public class ChatBotAPI {
     private final OpenAiService openAiService;
     private final WordService wordService;
     private final ChatBotMapper chatBotMapper;
+    private final ParsingService parsingService;
+    @PostMapping("api/test/getWordEtymology/{requestType}/{word}")
+    public ResponseEntity<WordEtymologyDto> getWordEtymology(
+            @PathVariable("requestType")
+            ChatBotRequestType requestType,
+            @PathVariable("word")
+            String word
+    ){
+        String getvalue = openAiService.handleChatBotRequest(requestType, word);
+        return ResponseEntity.ok(parsingService.parsingWordEtymology(getvalue));
+    }
+    @PostMapping("api/test/getWordSimilar/{requestType}/{word}")
+    public ResponseEntity<WordSimilarDto> getWordSimilar(
+            @PathVariable("requestType")
+            ChatBotRequestType requestType,
+            @PathVariable("word")
+            String word
+    ){
+        String getvalue = openAiService.handleChatBotRequest(requestType, word);
+        return ResponseEntity.ok(parsingService.parsingWordSimilar(getvalue));
+    }
+
+    @PostMapping("api/test/getWordMean/{requestType}/{word}")
+    public ResponseEntity<WordMeanDto> getWordMean(
+            @PathVariable("requestType")
+            ChatBotRequestType requestType,
+            @PathVariable("word")
+            String word
+    ){
+        String getvalue = openAiService.handleChatBotRequest(requestType, word);
+        return ResponseEntity.ok(parsingService.parsingWordMean(getvalue));
+
+    }
+    @PostMapping("api/test/getWordTips/{requestType}/{word}")
+    public ResponseEntity<WordTipsDto> getWordTips(
+            @PathVariable("requestType")
+            ChatBotRequestType requestType,
+            @PathVariable("word")
+            String word
+    ){
+        String getvalue = openAiService.handleChatBotRequest(requestType, word);
+        return ResponseEntity.ok(parsingService.parsingWordTips(getvalue));
+    }
+
+
+
+
+
+
+
+
 
     @Operation(summary = "Request Word Info to ChatBot", description = "사용자가 챗봇에게 단어 관련 질문을 전달합니다. 이후 답을 반환받습니다.")
     @ApiResponses({
@@ -43,7 +99,6 @@ public class ChatBotAPI {
             @PathVariable("word")
             String word
     ){
-
         String response;
         boolean isSuccess = false;
 
