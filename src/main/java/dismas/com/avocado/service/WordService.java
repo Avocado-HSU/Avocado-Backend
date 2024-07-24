@@ -1,5 +1,6 @@
 package dismas.com.avocado.service;
 
+import dismas.com.avocado.dto.parsingPage.WordMultiDto;
 import dismas.com.avocado.dto.wordPage.SearchRequestType;
 import dismas.com.avocado.domain.Member;
 import dismas.com.avocado.domain.word.MemberWord;
@@ -40,7 +41,6 @@ public class WordService {
 
     private final SearchMapper searchMapper;
     private final MainPageMapper mainPageMapper;
-
     /**
      * Word Search Service with GPT (생성형 AI 단어 검색 서비스)
      *
@@ -48,9 +48,9 @@ public class WordService {
      * @param word 검색하고자 하는 word
      */
     @Transactional
-    public Map<SearchRequestType, String> searchWord(Member member, String word){
-            return openAiService.handleSearchRequest(word);
-            // 파싱 로직 추가 필요
+    public WordMultiDto searchWord(Member member, String word){
+        return openAiService.handleSearchRequest(word);
+        // 파싱 로직 추가 필요
     }
 
     /**
@@ -63,9 +63,10 @@ public class WordService {
      * @param etymology 어원
      * @param korean 영어 단어 한글 해석
      */
+
     @Transactional
     public MemberWord insertMemberWord(
-            Member member, String english, String etymology, String korean
+            Member member, String english, String etymology, String korean,String suffix
     ) {
         Optional<Word> findWord = wordRepository.findWordByString(english);
         Word word;
@@ -76,6 +77,7 @@ public class WordService {
                             .english(english)
                             .etymology(etymology)
                             .korean(korean)
+                            .suffix(suffix)
                             .searchCount(1L)
                             .build()
             );

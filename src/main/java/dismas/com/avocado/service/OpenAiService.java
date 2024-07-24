@@ -1,6 +1,8 @@
 package dismas.com.avocado.service;
 
 import dismas.com.avocado.dto.chatBotPage.ChatBotRequestType;
+import dismas.com.avocado.dto.parsingPage.WordMultiDto;
+import dismas.com.avocado.dto.parsingPage.WordTipsDto;
 import dismas.com.avocado.dto.wordPage.SearchRequestType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.openai.OpenAiChatModel;
@@ -17,18 +19,22 @@ import static dismas.com.avocado.dto.wordPage.SearchRequestType.SEPARATE;
 @RequiredArgsConstructor
 public class OpenAiService {
     @Autowired
+    private ParsingService parsingService;
+
+    @Autowired
     private OpenAiChatModel openAiChatModel;
 
-    public Map<SearchRequestType, String> handleSearchRequest(String word){
-        Map<SearchRequestType,String> contents = new ConcurrentHashMap<>();
 
-        contents.put(MEANS, getSearchMeans(word));
-        contents.put(SEPARATE, getSearchSeparateEtymology(word));
-        contents.put(SearchRequestType.TIP, getSearchTip(word));
+    public WordMultiDto handleSearchRequest(String word){
+      //  Map<SearchRequestType,String> contents = new ConcurrentHashMap<>();
+        WordMultiDto wordMultiDto = new WordMultiDto();
 
-        return contents;
+        wordMultiDto.setWordMeanDto(parsingService.parsingWordMean(getMeans(word)));
+        wordMultiDto.setWordEtymologyDto(parsingService.parsingWordEtymology(getEtymology(word)));
+        wordMultiDto.setWordTipsDto(parsingService.parsingWordTips(getTips(word)));
+        return wordMultiDto;
     }
-
+/*
     private String getSearchMeans(String word) {
         String prompt = "단어 '" + word + "'의 뜻을 알려주세요.";
         return openAiChatModel.call(prompt) + " 더 필요한 도움이 있을까요?";
@@ -44,7 +50,7 @@ public class OpenAiService {
         // 파싱 후 반환 (parsing service)
         return openAiChatModel.call(prompt);
     }
-
+*/
     public String handleChatBotRequest(ChatBotRequestType requestType, String word) {
         return switch (requestType) {
             case DEFINE -> getMeans(word);
@@ -57,8 +63,10 @@ public class OpenAiService {
     }
 
     private String getMeans(String word) {
-        String prompt = "영단어 '" + word + "'의 품사별 뜻을 알려줘!";
-        return openAiChatModel.call(prompt);
+        String prompt = "영단어 '"+word+"'의 품사별 뜻을 알려줘! 어떤 품사인지 설명하고 그 뜻과 설명을 작성해줘.";
+        String result = openAiChatModel.call(prompt);
+        System.out.println(result);
+        return result;
     }
 
     private String getSimilarWords(String word) {

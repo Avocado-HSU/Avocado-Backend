@@ -5,6 +5,7 @@ import dismas.com.avocado.domain.word.MemberWord;
 import dismas.com.avocado.dto.libraryPage.LibraryPageResponseDto;
 import dismas.com.avocado.dto.libraryPage.UpdateLibraryResponseDto;
 import dismas.com.avocado.dto.libraryPage.UpdateLibraryResponseType;
+import dismas.com.avocado.dto.parsingPage.WordMultiDto;
 import dismas.com.avocado.dto.wordPage.SearchRequestType;
 import dismas.com.avocado.dto.wordPage.SearchWordResponseDto;
 import dismas.com.avocado.mapper.LibraryMapper;
@@ -122,9 +123,11 @@ public class LibraryPageAPI {
     ) {
         if(wordService.validateWord(word)){
             try {
-                Map<SearchRequestType,String> contents = wordService.searchWord(member, word);
+                WordMultiDto contents = wordService.searchWord(member, word);
+
                 //wordService.parsingWord(contents);
-                MemberWord createdWord = wordService.insertMemberWord(member, word, "어원", "한글 뜻");
+                MemberWord createdWord = wordService.insertMemberWord(member, word, contents.getWordEtymologyDto().
+                        getEtymology(), "한글 뜻",contents.getWordEtymologyDto().getSuffix());
 
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(wordPageMapper.toSearchWordResponseDto(

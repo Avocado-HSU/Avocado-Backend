@@ -1,5 +1,6 @@
 package dismas.com.avocado.dto.wordPage;
 
+import dismas.com.avocado.dto.parsingPage.WordMultiDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,7 +34,8 @@ public class SearchWordResponseDto {
     @Schema(description = "캐릭터 이미지")
     String characterImgUrl;
 
+    // 해당 내용 변경 -> Map<SearchRequestType, String> -> WordMultiDto
     @Schema(description = "OpenAI의 단어 분석 결과, Enum 타입으로 구분",
             allowableValues = {"MEANS", "SEPARATE", "TIP"})
-    Map<SearchRequestType, String> contents;
+    WordMultiDto contents;
 }

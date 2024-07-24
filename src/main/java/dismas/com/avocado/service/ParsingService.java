@@ -29,32 +29,38 @@ public class ParsingService {
             dto.setGreetingMsg(parts[0].trim());
 
             // 정의 부분 설정
-            List<String> definitions = extractDefinitions(parts[1].trim());
-            dto.setContents(definitions);
+            Map<String, String> meanings = extractMeanings(parts[1].trim());
+            dto.setMeanings(meanings);
         } else if (parts.length == 1) {
             // 인사 메시지만 있는 경우
             dto.setGreetingMsg(parts[0].trim());
-            dto.setContents(new ArrayList<>());
+            dto.setMeanings(new HashMap<>());
         }
 
         return dto;
     }
-    // 단어 의미 분리
-    private List<String> extractDefinitions(String response) {
-        List<String> definitions = new ArrayList<>();
 
-        // 줄바꿈으로 각 항목을 분리
+    // 품사별 정의 분리
+    private Map<String, String> extractMeanings(String response) {
+        Map<String, String> meanings = new HashMap<>();
+
+        // 각 품사 항목을 구분하기 위해 줄바꿈으로 분리
         String[] parts = response.split("\\n\\n");
 
-        // 각 부분을 정의로 처리
         for (String part : parts) {
             String trimmedPart = part.trim();
-            if (!trimmedPart.isEmpty() && !trimmedPart.matches("^\\(.*\\):.*")) { // 첫 줄(예: '(명사) 사전:') 제외
-                definitions.add(trimmedPart);
+            if (trimmedPart.isEmpty()) continue;
+
+            // 품사와 설명을 구분
+            String[] keyValue = trimmedPart.split(":", 2);
+            if (keyValue.length == 2) {
+                String key = keyValue[0].trim();
+                String value = keyValue[1].trim();
+                meanings.put(key, value);
             }
         }
 
-        return definitions;
+        return meanings;
     }
 
 
@@ -212,4 +218,19 @@ public class ParsingService {
 
         return dto;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
