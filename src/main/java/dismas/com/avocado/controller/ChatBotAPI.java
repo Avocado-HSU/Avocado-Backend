@@ -58,7 +58,7 @@ public class ChatBotAPI {
             String word
     ){
         String getvalue = openAiService.handleChatBotRequest(requestType, word);
-        return ResponseEntity.ok(parsingService.parsingWordMean(getvalue));
+        return ResponseEntity.ok(parsingService.parsingWordMean(getvalue,word));
 
     }
     @PostMapping("api/test/getWordTips/{requestType}/{word}")

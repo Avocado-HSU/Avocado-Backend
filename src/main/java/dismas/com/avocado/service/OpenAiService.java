@@ -30,7 +30,7 @@ public class OpenAiService {
       //  Map<SearchRequestType,String> contents = new ConcurrentHashMap<>();
         WordMultiDto wordMultiDto = new WordMultiDto();
 
-        wordMultiDto.setWordMeanDto(parsingService.parsingWordMean(getMeans(word)));
+        wordMultiDto.setWordMeanDto(parsingService.parsingWordMean(getMeans(word),word));
         wordMultiDto.setWordEtymologyDto(parsingService.parsingWordEtymology(getEtymology(word)));
         wordMultiDto.setWordTipsDto(parsingService.parsingWordTips(getTips(word)));
         return wordMultiDto;
@@ -64,7 +64,9 @@ public class OpenAiService {
     }
 
     private String getMeans(String word) {
-        String prompt = "영단어 '"+word+"'의 품사별 뜻을 알려줘! 어떤 품사인지 설명하고 그 뜻과 설명을 작성해줘.";
+        String prompt = "영단어 '"+word+"'의 뜻을 설명해. 출력형식은 명사, 동사, 형용사, 부사 네가지 분야로 설명할 것. " +
+                "분야별로 ':' 형태로 설명할 것. 만약 해당 단어가 명사, 동사, 형용사, 부사 중 해당되지 않는 것이 있다면 " +
+                "빈칸으로 비워둘 것.";
         String result = openAiChatModel.call(prompt);
         System.out.println(result);
         return result;

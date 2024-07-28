@@ -7,62 +7,52 @@ import dismas.com.avocado.dto.parsingPage.WordSimilarDto;
 import dismas.com.avocado.dto.parsingPage.WordTipsDto;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
 public class ParsingService {
 
-    public WordMeanDto parsingWordMean(String wordMean) {
+    public WordMeanDto parsingWordMean(String wordMean,String requestWord) {
         // WordMeanDto 객체 생성
         WordMeanDto dto = new WordMeanDto();
 
-        // 인사 메시지와 정의 부분을 분리
-        String[] parts = wordMean.split("\\n\\n", 2); // 첫 번째 분리: 인사 메시지와 정의 부분
-
-        if (parts.length > 1) {
-            // 인사 메시지 설정
-            dto.setGreetingMsg(parts[0].trim());
-
-            // 정의 부분 설정
-            Map<String, String> meanings = extractMeanings(parts[1].trim());
-            dto.setMeanings(meanings);
-        } else if (parts.length == 1) {
-            // 인사 메시지만 있는 경우
-            dto.setGreetingMsg(parts[0].trim());
+        // 빈 문자열 체크
+        if (wordMean == null || wordMean.trim().isEmpty()) {
+            dto.setGreetingMsg("검색 결과가 없습니다.");
             dto.setMeanings(new HashMap<>());
+            return dto;
         }
 
-        return dto;
-    }
+        // 기본 greetingMsg 설정
+        dto.setGreetingMsg(requestWord+"에 대한 검색 결과입니다");
 
-    // 품사별 정의 분리
-    private Map<String, String> extractMeanings(String response) {
-        Map<String, String> meanings = new HashMap<>();
+        // 품사와 정의를 저장할 Map
+        Map<String, String> meanings = new LinkedHashMap<>();
 
-        // 각 품사 항목을 구분하기 위해 줄바꿈으로 분리
-        String[] parts = response.split("\\n\\n");
-
+        // 각 품사 항목을 위한 정규 표현식 패턴 정의
+        String[] parts = {"명사", "동사", "형용사", "부사"};
         for (String part : parts) {
-            String trimmedPart = part.trim();
-            if (trimmedPart.isEmpty()) continue;
+            // 각 품사에 대한 패턴 생성
+            String pattern = String.format("(?<=^%s:\\s*)(.*?)(?=\\n\\n|\\n$)", Pattern.quote(part));
+            Pattern regexPattern = Pattern.compile(pattern, Pattern.DOTALL | Pattern.MULTILINE);
+            Matcher matcher = regexPattern.matcher(wordMean);
 
-            // 품사와 설명을 구분
-            String[] keyValue = trimmedPart.split(":", 2);
-            if (keyValue.length == 2) {
-                String key = keyValue[0].trim();
-                String value = keyValue[1].trim();
-                meanings.put(key, value);
+            // 정의를 찾고 Map에 저장
+            if (matcher.find()) {
+                String definition = matcher.group(1).trim();
+                meanings.put(part, definition.isEmpty() ? "" : definition);
+            } else {
+                // 정의가 없는 경우 빈 문자열로 설정
+                meanings.put(part, "");
             }
         }
 
-        return meanings;
-    }
+        dto.setMeanings(meanings);
 
+        return dto;
+    }
 
     public WordSimilarDto parsingWordSimilar(String wordSimilar) {
         // WordSimilarDto 객체 생성
@@ -72,7 +62,7 @@ public class ParsingService {
         String[] parts = wordSimilar.split("\\n\\n", 2); // 첫 번째 분리: 인사 메시지와 유사 단어 부분
 
         if (parts.length > 1) {
-            // 인사 메시지 설정
+            // 인사 메시지 설정 -> 인사 메시지에 첫번쨰 유사 단어가 들어가는 형식
             dto.setGreetingMsg(parts[0].trim());
 
             // 유사 단어 부분 설정
@@ -167,70 +157,103 @@ public class ParsingService {
         // WordEtymologyDto 객체 생성
         WordEtymologyDto dto = new WordEtymologyDto();
 
-        // 각 항목의 내용을 저장할 변수
-        String etymology = "";
-        String root = "";
-        String prefix = "";
-        String suffix = "";
-        String etymologyDescription = "";
-        String rootDescription = "";
-        String prefixDescription = "";
-        String suffixDescription = "";
-
-        // 데이터 항목별로 분리
-        String[] parts = wordEtymology.split("\\n\\n");
-
-        // 항목별 내용 추출
-        for (String part : parts) {
-            if (part.startsWith("어원:")) {
-                etymology = part.replace("어원:", "").trim();
-            } else if (part.startsWith("어근:")) {
-                root = part.replace("어근:", "").trim();
-            } else if (part.startsWith("접두사:")) {
-                prefix = part.replace("접두사:", "").trim();
-            } else if (part.startsWith("접미사:")) {
-                suffix = part.replace("접미사:", "").trim();
-            } else if (part.startsWith("설명")) {
-                String[] descriptionParts = part.split("\\n");
-                for (String desc : descriptionParts) {
-                    if (desc.startsWith("어원:")) {
-                        etymologyDescription = desc.replace("어원:", "").trim();
-                    } else if (desc.startsWith("어근:")) {
-                        rootDescription = desc.replace("어근:", "").trim();
-                    } else if (desc.startsWith("접두사:")) {
-                        prefixDescription = desc.replace("접두사:", "").trim();
-                    } else if (desc.startsWith("접미사:")) {
-                        suffixDescription = desc.replace("접미사:", "").trim();
-                    }
-                }
-            }
+        // 빈 문자열 체크
+        if (wordEtymology == null || wordEtymology.trim().isEmpty()) {
+            dto.setEtymology("");
+            dto.setRoot("");
+            dto.setPrefix("");
+            dto.setSuffix("");
+            dto.setEtymologyDescription("");
+            dto.setRootDescription("");
+            dto.setPrefixDescription("");
+            dto.setSuffixDescription("");
+            return dto;
         }
 
-        // DTO에 값 설정
-        dto.setEtymology(etymology);
-        dto.setRoot(root);
-        dto.setPrefix(prefix);
-        dto.setSuffix(suffix);
-        dto.setEtymologyDescription(etymologyDescription);
-        dto.setRootDescription(rootDescription);
-        dto.setPrefixDescription(prefixDescription);
-        dto.setSuffixDescription(suffixDescription);
+        // 항목별 데이터 추출
+        String etymology = extractSection(wordEtymology, "어원:");
+        String root = extractSection(wordEtymology, "어근:");
+        String prefix = extractSection(wordEtymology, "접두사:");
+        String suffix = extractSection(wordEtymology, "접미사:");
+        String description = extractDescription(wordEtymology);
+
+        // 설명에서 각 세부 항목 추출
+        String etymologyDescription = extractSubsection(description, "어원:");
+        String rootDescription = extractSubsection(description, "어근:");
+        String prefixDescription = extractSubsection(description, "접두사:");
+        String suffixDescription = extractSubsection(description, "접미사:");
+
+        // DTO에 설정
+        dto.setEtymology(etymology.trim());
+        dto.setRoot(root.trim());
+        dto.setPrefix(prefix.trim());
+        dto.setSuffix(suffix.trim());
+        dto.setEtymologyDescription(etymologyDescription.trim());
+        dto.setRootDescription(rootDescription.trim());
+        // 없음으로 오는 예외 처리
+        if (prefixDescription.trim().startsWith("없음")) {
+            dto.setPrefixDescription("");
+        }
+        else {
+            dto.setPrefixDescription(prefixDescription.trim());
+        }
+        if (suffixDescription.trim().startsWith("없음")) {
+            dto.setSuffixDescription("");
+        }
+        else {
+            dto.setSuffixDescription(suffixDescription.trim());
+        }
 
         return dto;
     }
 
+    private String extractSection(String text, String section) {
+        int startIndex = text.indexOf(section);
+        if (startIndex == -1) return "";
 
+        startIndex += section.length();
+        int endIndex = findNextSectionStart(text, startIndex);
 
+        String value = text.substring(startIndex, endIndex).trim();
+        return normalizeSectionValue(value);
+    }
+    // 우선적으로 어원: 어근: 접두사: 접미사: 설명에 대한 정보 처리
+    private int findNextSectionStart(String text, int startIndex) {
+        Pattern pattern = Pattern.compile("(?<=\\n|^)(어원:|어근:|접두사:|접미사:|설명\\n)", Pattern.MULTILINE);
+        Matcher matcher = pattern.matcher(text);
+        if (matcher.find(startIndex)) {
+            return matcher.start();
+        }
+        return text.length();
+    }
+    // 설명 부분 처리
+    private String extractDescription(String text) {
+        Pattern pattern = Pattern.compile("(?<=설명\\n)(.*)", Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(text);
+        if (matcher.find()) {
+            return matcher.group(1).trim();
+        }
+        return "";
+    }
+    //
+    private String extractSubsection(String description, String subsection) {
+        String patternString = String.format("(?<=%s\\s*)(.*?)(?=(?:\\n(?:어원:|어근:|접두사:|접미사:|$))|$)", Pattern.quote(subsection));
+        Pattern pattern = Pattern.compile(patternString, Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(description);
+        if (matcher.find()) {
+            return matcher.group(1).trim();
+        }
+        return "";
+    }
 
-
-
-
-
-
-
-
-
-
+    private String normalizeSectionValue(String value) {
+        // 값이 "없음" 또는 비어 있는 경우 빈 문자열 반환
+        if ("없음".equalsIgnoreCase(value) || value.isEmpty()) {
+            return "";
+        }
+        // 값의 끝에 불필요한 공백이나 특수문자 제거
+        return value.replaceAll("[\\s]*$", "").replaceAll("[:]*$", "");
+    }
 
 
 }
