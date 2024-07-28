@@ -86,9 +86,12 @@ public class LibraryPageAPI {
             try {
                 WordMultiDto contents = wordService.searchWord(member, word);
 
-                //wordService.parsingWord(contents);
-                MemberWord createdWord = wordService.insertMemberWord(member, word, contents.getWordEtymologyDto().
-                        getEtymology(), "한글 뜻",contents.getWordEtymologyDto().getSuffix());
+                String etymology = contents.getWordEtymologyDto().getEtymology();
+                String korean = contents.getWordEtymologyDto().getKorean();
+                String Suffix = contents.getWordEtymologyDto().getSuffix();
+                String prefix = contents.getWordEtymologyDto().getPrefix();
+
+                MemberWord createdWord = wordService.insertMemberWord(member, word, etymology, korean, Suffix, prefix);
 
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(wordPageMapper.toSearchWordResponseDto(
@@ -158,8 +161,4 @@ public class LibraryPageAPI {
     ){
         return wordService.getRecentSearchWord(member);
     }
-
-
-
-
 }
