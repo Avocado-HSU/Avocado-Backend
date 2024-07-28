@@ -95,9 +95,6 @@ public class MainPageAPI {
 
 
 
-
-
-
     /**
      * Get Search APi (검색 페이지 호출 API)
      * 가장 최근 검색한 내용 중 10개를 호출한다.

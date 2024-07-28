@@ -67,8 +67,7 @@ public class SearchPageAPI {
 
                 //wordService.parsingWord(contents);
                 MemberWord createdWord = wordService.insertMemberWord(member, word, contents.getWordEtymologyDto().
-                        getEtymology(), "한글 뜻",contents.getWordEtymologyDto().getSuffix());
-
+                        getEtymology(), contents.getWordEtymologyDto().getKorean(),contents.getWordEtymologyDto().getSuffix(), contents.getWordEtymologyDto().getPrefix());
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(wordPageMapper.toSearchWordResponseDto(
                                 true,

@@ -66,7 +66,7 @@ public class WordService {
 
     @Transactional
     public MemberWord insertMemberWord(
-            Member member, String english, String etymology, String korean,String suffix
+            Member member, String english, String etymology, String korean, String suffix, String prefix
     ) {
         Optional<Word> findWord = wordRepository.findWordByString(english);
         Word word;
@@ -78,6 +78,7 @@ public class WordService {
                             .etymology(etymology)
                             .korean(korean)
                             .suffix(suffix)
+                            .prefix(prefix)
                             .searchCount(1L)
                             .build()
             );

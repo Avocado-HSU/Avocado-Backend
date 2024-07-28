@@ -8,6 +8,7 @@ public class WordEtymologyDto {
     private String root;        // 어근
     private String prefix;      // 접두사
     private String suffix;      // 접미사
+    private String korean;       // 한글뜻
     private String etymologyDescription; // 어원 설명
     private String rootDescription; // 어근 설명
     private String prefixDescription; // 접두사 설명

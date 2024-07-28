@@ -35,7 +35,8 @@ public class Word extends BaseEntity {
     private String korean;
     private String etymology;// 어원
 
-    private String suffix;// 접미사
+    private String prefix;  // 접두사
+    private String suffix;  // 접미사
     private String imageUrl;
     private String audioUrl;
 

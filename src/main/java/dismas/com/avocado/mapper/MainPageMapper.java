@@ -60,7 +60,7 @@ public class MainPageMapper {
                 .map(word -> new WordDto(
                         word.getEnglish(),
                         word.getKorean(),
-                        word.getEtymology()))
+                        word.getPrefix() + " + " + word.getEtymology() + " + " + word.getSuffix()))
                 .collect(Collectors.toList());
 
         return RecommendWordDto.builder()
