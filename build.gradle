@@ -44,6 +44,15 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    // DeepL 번역
+    // JSON 처리 라이브러리
+    implementation 'org.json:json:20211205'
+
+    // HTTP 요청을 위한 라이브러리 (Apache HttpClient 예제)
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+
+    // Gradle의 Java 플러그인
+    implementation 'org.apache.httpcomponents:httpcore:4.4.14'
 
     //runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j' // Uncomment if you use MySQL

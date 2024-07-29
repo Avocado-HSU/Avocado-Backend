@@ -11,6 +11,7 @@ import dismas.com.avocado.dto.wordPage.SearchWordResponseDto;
 import dismas.com.avocado.mapper.LibraryMapper;
 import dismas.com.avocado.mapper.WordPageMapper;
 import dismas.com.avocado.service.CharacterService;
+import dismas.com.avocado.service.DeepLService;
 import dismas.com.avocado.service.LibraryService;
 import dismas.com.avocado.service.WordService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,7 +39,7 @@ public class LibraryPageAPI {
     private final CharacterService characterService;
     private final LibraryService libraryService;
     private final WordService wordService;
-
+    private final DeepLService deepLService;
     /**
      * Library Page API
      *  1. 캐릭터 이미지 반환
@@ -87,7 +88,8 @@ public class LibraryPageAPI {
                 WordMultiDto contents = wordService.searchWord(member, word);
 
                 String etymology = contents.getWordEtymologyDto().getEtymology();
-                String korean = contents.getWordEtymologyDto().getKorean();
+                // DeepL에서 받아오는 식으로 처리
+                String korean = deepLService.translateText(word,"ko");
                 String Suffix = contents.getWordEtymologyDto().getSuffix();
                 String prefix = contents.getWordEtymologyDto().getPrefix();
 
@@ -104,6 +106,8 @@ public class LibraryPageAPI {
             }catch (RuntimeException e){
                 // OpenAI 에러 : 503
                 return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }else{
             // 단어 검증 실패

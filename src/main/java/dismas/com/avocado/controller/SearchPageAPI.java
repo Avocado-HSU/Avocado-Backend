@@ -6,6 +6,7 @@ import dismas.com.avocado.dto.parsingPage.WordMultiDto;
 import dismas.com.avocado.dto.wordPage.SearchWordResponseDto;
 import dismas.com.avocado.mapper.WordPageMapper;
 import dismas.com.avocado.service.CharacterService;
+import dismas.com.avocado.service.DeepLService;
 import dismas.com.avocado.service.WordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,7 +32,7 @@ public class SearchPageAPI {
     private final CharacterService characterService;
 
     private final WordPageMapper wordPageMapper;
-
+    private final DeepLService deepLService;
     /**
      * SearchPage Search API (검색 API)
      * - 입력값에 대한 기본적인 형식 검증
@@ -66,7 +67,7 @@ public class SearchPageAPI {
                 WordMultiDto contents = wordService.searchWord(member, word);
 
                 String etymology = contents.getWordEtymologyDto().getEtymology();
-                String korean = contents.getWordEtymologyDto().getKorean();
+                String korean = deepLService.translateText(word,"ko");
                 String Suffix = contents.getWordEtymologyDto().getSuffix();
                 String prefix = contents.getWordEtymologyDto().getPrefix();
 
@@ -82,6 +83,8 @@ public class SearchPageAPI {
             }catch (RuntimeException e){
                 // OpenAI 에러 : 503
                 return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }else{
             // 단어 검증 실패

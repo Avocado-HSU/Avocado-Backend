@@ -1,6 +1,5 @@
 package dismas.com.avocado.service;
 
-import dismas.com.avocado.dto.WordDto;
 import dismas.com.avocado.dto.parsingPage.WordEtymologyDto;
 import dismas.com.avocado.dto.parsingPage.WordMeanDto;
 import dismas.com.avocado.dto.parsingPage.WordSimilarDto;
@@ -14,19 +13,19 @@ import java.util.regex.Pattern;
 @Service
 public class ParsingService {
 
-    public WordMeanDto parsingWordMean(String wordMean,String requestWord) {
+    public WordMeanDto parsingWordMean(String wordMean, String requestWord) {
         // WordMeanDto 객체 생성
         WordMeanDto dto = new WordMeanDto();
 
         // 빈 문자열 체크
         if (wordMean == null || wordMean.trim().isEmpty()) {
             dto.setGreetingMsg("검색 결과가 없습니다.");
-            dto.setMeanings(new HashMap<>());
+            dto.setMeanings(new LinkedHashMap<>());
             return dto;
         }
 
         // 기본 greetingMsg 설정
-        dto.setGreetingMsg(requestWord+"에 대한 검색 결과입니다");
+        dto.setGreetingMsg(requestWord + "에 대한 검색 결과입니다");
 
         // 품사와 정의를 저장할 Map
         Map<String, String> meanings = new LinkedHashMap<>();
@@ -35,7 +34,10 @@ public class ParsingService {
         String[] parts = {"명사", "동사", "형용사", "부사"};
         for (String part : parts) {
             // 각 품사에 대한 패턴 생성
-            String pattern = String.format("(?<=^%s:\\s*)(.*?)(?=\\n\\n|\\n$)", Pattern.quote(part));
+            // \s*은 공백을 허용하며, (.*?)는 비탐욕적으로 정의를 가져옵니다.
+            String pattern = String.format("(?<=%s:\\s*)(.*?)(?=(?:%s:|\\s*\\n|$))",
+                    Pattern.quote(part),
+                    String.join("|", parts));
             Pattern regexPattern = Pattern.compile(pattern, Pattern.DOTALL | Pattern.MULTILINE);
             Matcher matcher = regexPattern.matcher(wordMean);
 
