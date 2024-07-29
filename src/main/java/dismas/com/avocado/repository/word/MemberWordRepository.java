@@ -18,8 +18,8 @@ import java.util.Optional;
 public interface MemberWordRepository extends JpaRepository<MemberWord, Long> {
 
     // 추후 Collection 타입으로 관리하는 것을 고민해 보아야 한다.
-    @Query("select m from MemberWord m where m.word = :word")
-    Optional<MemberWord> findByWord(@Param("word") Word word);
+    @Query("select m from MemberWord m where m.word = :word and m.member = :member")
+    Optional<MemberWord> findByMemberAndWord(@Param("word") Word word, @Param("member") Member member);
 
 
     @Query("select mw from MemberWord mw join fetch mw.word where mw.member =:member order by mw.createdAt desc")

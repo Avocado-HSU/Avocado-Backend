@@ -1,7 +1,6 @@
 package dismas.com.avocado.service;
 
 import dismas.com.avocado.dto.parsingPage.WordMultiDto;
-import dismas.com.avocado.dto.wordPage.SearchRequestType;
 import dismas.com.avocado.domain.Member;
 import dismas.com.avocado.domain.word.MemberWord;
 import dismas.com.avocado.domain.word.Word;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -88,8 +86,9 @@ public class WordService {
             word.plusWordSearchCount();
         }
 
-        Optional<MemberWord> findMemberWord = memberWordRepository.findByWord(word);
+        Optional<MemberWord> findMemberWord = memberWordRepository.findByMemberAndWord(word, member);
         MemberWord memberWord;
+
         if(findMemberWord.isEmpty()){
             // 해당 Word가 Library에 등록되어 있지 않을 경우
             memberWord = memberWordRepository.save(
