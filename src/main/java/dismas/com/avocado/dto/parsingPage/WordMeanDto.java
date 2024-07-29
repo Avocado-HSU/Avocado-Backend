@@ -9,5 +9,4 @@ import java.util.Map;
 public class WordMeanDto {
     private Map<String, String> meanings; // 각 품사와 해당 설명을 저장
     private String greetingMsg; // 인사 메시지
-
 }

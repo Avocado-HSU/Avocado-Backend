@@ -11,12 +11,13 @@ import java.util.Map;
 public class WordPageMapper {
 
     public SearchWordResponseDto toSearchWordResponseDto(
-            Boolean isSuccess, Boolean isLibraryRegistered, Long libraryId, String imgUrl, WordMultiDto contents){
+            Boolean isSuccess, Boolean isLibraryRegistered, Long libraryId, String imgUrl, WordMultiDto contents, String korean){
 
         return SearchWordResponseDto.builder()
                 .isSuccess(isSuccess)
                 .isLibraryRegistered(isLibraryRegistered)
                 .libraryId(libraryId)
+                .korean(korean)
                 .characterImgUrl(imgUrl)
                 .contents(contents)
                 .build();

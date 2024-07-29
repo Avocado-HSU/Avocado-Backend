@@ -78,7 +78,8 @@ public class SearchPageAPI {
                                 createdWord.getIsLibraryWord(),
                                 createdWord.getId(),
                                 characterService.getCharacterImage(member),
-                                contents
+                                contents,
+                                korean
                         ));
             }catch (RuntimeException e){
                 // OpenAI 에러 : 503

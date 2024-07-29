@@ -65,6 +65,7 @@ public class LibraryPageAPI {
                 characterService.getCharacterImage(member));
     }
 
+
     @Operation(summary = "단어장 페이지로 이동", description = "검색에 대한 결과를 반환합니다")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공"),
