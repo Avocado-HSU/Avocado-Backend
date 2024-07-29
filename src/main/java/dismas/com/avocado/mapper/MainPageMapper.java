@@ -57,10 +57,24 @@ public class MainPageMapper {
 
     public RecommendWordDto toRecommendWordDto(List<Word> random5Words){
         List<WordDto> recommendWords = random5Words.stream()
-                .map(word -> new WordDto(
-                        word.getEnglish(),
-                        word.getKorean(),
-                        word.getPrefix() + " + " + word.getEtymology() + " + " + word.getSuffix()))
+                .map(word -> {
+                    List<String> components = new ArrayList<>();
+                    if (word.getPrefix() != null && !word.getPrefix().trim().isEmpty()) {
+                        components.add(word.getPrefix());
+                    }
+                    if (word.getEtymology() != null && !word.getEtymology().trim().isEmpty()) {
+                        components.add(word.getEtymology());
+                    }
+                    if (word.getSuffix() != null && !word.getSuffix().trim().isEmpty()) {
+                        components.add(word.getSuffix());
+                    }
+                    String combined = String.join(" + ", components);
+                    return new WordDto(
+                            word.getEnglish(),
+                            word.getKorean(),
+                            combined
+                    );
+                })
                 .collect(Collectors.toList());
 
         return RecommendWordDto.builder()

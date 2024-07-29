@@ -8,6 +8,7 @@ import dismas.com.avocado.dto.libraryPage.LibraryPageResponseDto;
 import dismas.com.avocado.dto.libraryPage.UpdateLibraryResponseType;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,13 +22,25 @@ public class LibraryMapper {
      * @return List<LibraryDto> LibraryPageDto 생성을 위함
      */
     public List<LibraryWordDto> toLibraryDtos(List<MemberWord> memberWords) {
+
         return memberWords.stream()
-                .map(memberWord -> LibraryWordDto.builder()
-                        .libraryId(memberWord.getId())
-                        .english(memberWord.getWord().getEnglish())
-                        .korean(memberWord.getWord().getKorean())
-                        .libraryUpdatedTime(memberWord.getUpdatedAt())
-                        .build())
+                .map(memberWord -> {
+                    List<String> etymologyList = new ArrayList<>();
+                    if (memberWord.getWord().getEtymology() != null && !memberWord.getWord().getEtymology().isEmpty()) {
+                        etymologyList.add(memberWord.getWord().getEtymology());
+                    }
+                    if (memberWord.getWord().getPrefix() != null && !memberWord.getWord().getPrefix().isEmpty()) {
+                        etymologyList.add(memberWord.getWord().getPrefix());
+                    }
+
+                    return LibraryWordDto.builder()
+                            .libraryId(memberWord.getId())
+                            .english(memberWord.getWord().getEnglish())
+                            .korean(memberWord.getWord().getKorean())
+                            .etymologyList(etymologyList)
+                            .libraryUpdatedTime(memberWord.getUpdatedAt())
+                            .build();
+                })
                 .collect(Collectors.toList());
     }
 

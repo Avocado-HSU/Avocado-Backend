@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
 @Service
 public class DeepLService {
     private static final String API_URL = "https://api-free.deepl.com/v2/translate"; // url 요청 주소
